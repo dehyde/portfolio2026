@@ -10,8 +10,172 @@
       <link rel="stylesheet" crossorigin href="/portfolio2026/assets/main-BCWFNqUb.css">
     </head>
 
-    <body>
-      <div id="root"></div>
-    </body>
-  </html>
+  <body>
+    <div id="root"></div>
+    <script>
+      (() => {
+        const style = document.createElement("style");
+        style.textContent = `
+          /* Allow the intro copy to span a wider width on small screens */
+          #root [class*="w-[335"], #root [class*="max-w-[335"], #root [class*="w-[313"] {
+            max-width: min(90vw, 520px);
+            width: min(90vw, 520px);
+          }
+
+          /* Keep the animated greeting stable during typing/deleting */
+          #root .typing-greeting {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            min-height: 1.2em;
+            min-width: 12ch;
+            line-height: 1.05;
+            vertical-align: baseline;
+            flex-wrap: nowrap;
+          }
+          #root .typing-greeting-text {
+            display: inline-block;
+            min-width: 12ch;
+          }
+          /* Tighten vertical rhythm between greeting and next line */
+          #root .typing-greeting + span br[aria-hidden="true"] {
+            line-height: 1;
+          }
+        `;
+        document.head.appendChild(style);
+
+        const greetings = [
+          "Hello",
+          "Hi",
+          "Hey",
+          "Yo",
+          "Sup",
+          "What\u2019s up",
+          "Hello, world",
+          "Aloha",
+          "Howdy",
+          "Hiya",
+          "Oh hi there",
+          "How you doin\u2019",
+          "Hey you",
+          "Look who\u2019s here",
+          "Well hello",
+          "Greetings",
+          "Ahoy",
+          "Yo yo",
+          "Heyo",
+          "Welcome",
+          "Hi friend",
+          "Good to see you",
+          "\ud83d\udc40 oh hi",
+          "\ud83d\udc4b hello",
+        ];
+
+        const targetText = "Hello_World!";
+
+        function getNextIndex(current) {
+          if (greetings.length < 2) return current;
+          let next = current;
+          while (next === current) {
+            next = Math.floor(Math.random() * greetings.length);
+          }
+          return next;
+        }
+
+        function startTyping(targetEl) {
+          let phraseIndex = Math.floor(Math.random() * greetings.length);
+          let display = "";
+          let deleting = false;
+
+          const textSpan = document.createElement("span");
+          textSpan.className = "typing-greeting-text";
+          textSpan.style.display = "inline-block";
+
+          targetEl.textContent = "";
+          targetEl.classList.add("typing-greeting");
+          targetEl.append(textSpan);
+
+          // Ensure container keeps its footprint even when empty
+          targetEl.style.display = "inline-flex";
+          targetEl.style.alignItems = "baseline";
+          targetEl.style.minHeight = "1.2em";
+          targetEl.style.minWidth = "12ch";
+
+          function step() {
+            const currentGreeting = greetings[phraseIndex];
+            const glyphs = Array.from(currentGreeting);
+            const displayGlyphs = Array.from(display);
+
+            if (!deleting && display === currentGreeting) {
+              setTimeout(() => {
+                deleting = true;
+                step();
+              }, 1200);
+              return;
+            }
+
+            if (deleting && display === "") {
+              deleting = false;
+              phraseIndex = getNextIndex(phraseIndex);
+              setTimeout(step, 150);
+              return;
+            }
+
+            const nextLength = deleting
+              ? displayGlyphs.length - 1
+              : displayGlyphs.length + 1;
+
+            display = glyphs.slice(0, Math.max(nextLength, 0)).join("");
+            textSpan.textContent = display || "\u00a0";
+            setTimeout(step, deleting ? 50 : 90);
+          }
+
+          step();
+        }
+
+        function tryActivate(root) {
+          const walker = document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_TEXT,
+            {
+              acceptNode: (node) =>
+                node.nodeValue && node.nodeValue.includes(targetText)
+                  ? NodeFilter.FILTER_ACCEPT
+                  : NodeFilter.FILTER_SKIP,
+            }
+          );
+
+          const match = walker.nextNode();
+          if (match && match.parentElement) {
+            startTyping(match.parentElement);
+            return true;
+          }
+
+          return false;
+        }
+
+        function setup() {
+          const root = document.getElementById("root");
+          if (!root) return;
+
+          if (tryActivate(root)) return;
+
+          const observer = new MutationObserver(() => {
+            if (tryActivate(root)) {
+              observer.disconnect();
+            }
+          });
+
+          observer.observe(root, { childList: true, subtree: true });
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", setup);
+        } else {
+          setup();
+        }
+      })();
+    </script>
+  </body>
+</html>
   

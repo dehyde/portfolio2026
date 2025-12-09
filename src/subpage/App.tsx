@@ -17,24 +17,26 @@ export default function App() {
         {/* Grid system - 6 columns with 32px gutters */}
         <div className="grid grid-cols-6 gap-[32px]">
           {/* Left navigation - column 1, sticky */}
-          <div className="col-span-1">
+          <div className="col-span-1 text-system">
             <Navigation />
           </div>
           
           {/* Main content - columns 2-6 */}
           <div className="col-span-5">
             <HeroSection />
-            <OverviewSection />
-            <ContextSection />
-            <UserProblemsSection />
-            <GoalsSection />
-            <OrganizationalChallengesSection />
-            <MultiAxisSection />
-            <GovernanceSection />
-            <SummarySection />
-            
-            {/* Bottom spacer - one viewport height */}
-            <div className="h-screen"></div>
+            <div className="text-system">
+              <OverviewSection />
+              <ContextSection />
+              <UserProblemsSection />
+              <GoalsSection />
+              <OrganizationalChallengesSection />
+              <MultiAxisSection />
+              <GovernanceSection />
+              <SummarySection />
+              
+              {/* Bottom spacer - one viewport height */}
+              <div className="h-screen"></div>
+            </div>
           </div>
         </div>
       </div>
