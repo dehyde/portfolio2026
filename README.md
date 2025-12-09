@@ -9,11 +9,11 @@ This is a code bundle for Portfolio Home Screen. The original project is availab
 
 ## Deploying to GitHub Pages
 
-The Vite build outputs static files to `docs/` with `base: '/portfolio/'`, so GitHub Pages can serve directly from the repo.
+The Vite build outputs static files to `docs/` with `base: '/portfolio2026/'`, so GitHub Pages can serve directly from the repo.
 
 1. Build: `npm run build` (generates `docs/`)
 2. Commit and push `docs/` to `main`
 3. In GitHub repo settings → Pages: set **Source** to branch `main`, folder `/docs`
-4. The site will be available at https://dehyde.github.io/portfolio/
+4. The site will be available at https://dehyde.github.io/portfolio2026/
 
 If you rebuild later, re-run `npm run build`, commit the updated `docs/`, and push to `main`.
