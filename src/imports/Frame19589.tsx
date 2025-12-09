@@ -4,8 +4,81 @@ import imgCaseStudyVariant3 from "figma:asset/1056e94b8aa2b0cf8d31aa5313eebc36de
 import imgMonitoringHealth from "figma:asset/561b6229b5045b5f0539fc7699517aa9fc30abc7.png";
 import imgFrame19585 from "figma:asset/e592199402521024d72470dbd2db367cf55ccbaf.png";
 import imgFrame19567 from "figma:asset/ec0894087eabce704b3f79fd5fc6692869ec475d.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+
+const greetings = [
+  "Hello",
+  "Hi",
+  "Hey",
+  "Yo",
+  "Sup",
+  "What's up",
+  "Hello, world",
+  "Aloha",
+  "Howdy",
+  "Hiya",
+  "Oh hi there",
+  "How you doin'",
+  "Hey you",
+  "Look who's here",
+  "Well hello",
+  "Greetings",
+  "Ahoy",
+  "Yo yo",
+  "Heyo",
+  "Welcome",
+  "Hi friend",
+  "Good to see you",
+  "👀 oh hi",
+  "🙋 hello",
+];
+
+function TypingGreeting() {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentGreeting = greetings[phraseIndex];
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    if (!isDeleting && displayText === currentGreeting) {
+      timeoutId = setTimeout(() => setIsDeleting(true), 1200);
+    } else if (isDeleting && displayText === "") {
+      setIsDeleting(false);
+      setPhraseIndex((prev) => (prev + 1) % greetings.length);
+    } else {
+      const nextLength = isDeleting
+        ? displayText.length - 1
+        : displayText.length + 1;
+
+      timeoutId = setTimeout(() => {
+        setDisplayText(currentGreeting.slice(0, nextLength));
+      }, isDeleting ? 45 : 95);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [displayText, isDeleting, phraseIndex]);
+
+  return (
+    <span className="inline-flex items-center gap-[4px]">
+      <span aria-live="polite" className="whitespace-nowrap">
+        {displayText}
+      </span>
+      <motion.span
+        aria-hidden="true"
+        className="block h-[0.9em] w-[2px] bg-[#2c2c2c]"
+        animate={{ opacity: [1, 0] }}
+        transition={{ repeat: Infinity, duration: 0.9, ease: "easeInOut" }}
+      />
+    </span>
+  );
+}
 
 function Frame20() {
   return (
@@ -154,7 +227,7 @@ function Frame13() {
     <div className="absolute content-stretch flex flex-col gap-[40px] md:gap-[70px] items-start left-[20px] md:left-[626px] top-[80px] md:top-[134px] max-w-[calc(100%-40px)] md:max-w-[335.099px]">
       <p className="font-['IBM_Plex_Sans:Bold',sans-serif] not-italic leading-[0.94] relative shrink-0 text-[#2c2c2c] text-[28px] md:text-[42.418px] w-full md:w-[335.099px]">
         <span className="font-['IBM_Plex_Mono:Bold',sans-serif]">
-          Hello_World!
+          <TypingGreeting />
         </span>
         <span>
           {" "}

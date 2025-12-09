@@ -72,6 +72,12 @@ export default defineConfig({
   build: {
     target: 'esnext',
     outDir: 'docs',
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        subpage: path.resolve(__dirname, 'subpage/index.html'),
+      },
+    },
   },
   server: {
     port: 3000,
