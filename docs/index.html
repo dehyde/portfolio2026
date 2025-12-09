@@ -16,29 +16,26 @@
       (() => {
         const style = document.createElement("style");
         style.textContent = `
-          /* Allow the intro copy to span a wider width on small screens */
-          #root [class*="w-[335"], #root [class*="max-w-[335"], #root [class*="w-[313"] {
-            max-width: min(90vw, 520px);
-            width: min(90vw, 520px);
+          #root #welcome p {
+            max-width: min(92vw, 540px);
+            width: auto;
           }
-
-          /* Keep the animated greeting stable during typing/deleting */
-          #root .typing-greeting {
+          #root #welcome .typing-greeting {
             display: inline-flex;
             align-items: baseline;
-            gap: 4px;
+            gap: 6px;
             min-height: 1.2em;
             min-width: 12ch;
             line-height: 1.05;
             vertical-align: baseline;
             flex-wrap: nowrap;
+            white-space: nowrap;
           }
-          #root .typing-greeting-text {
+          #root #welcome .typing-greeting-text {
             display: inline-block;
             min-width: 12ch;
           }
-          /* Tighten vertical rhythm between greeting and next line */
-          #root .typing-greeting + span br[aria-hidden="true"] {
+          #root #welcome .typing-greeting + span br[aria-hidden="true"] {
             line-height: 1;
           }
         `;
@@ -73,6 +70,17 @@
 
         const targetText = "Hello_World!";
 
+        const newIntroLine = [
+          "I'm a principal UX Lead @ Autodesk",
+          "Product & interaction design educator @ Haifa University",
+        ].join("\n");
+
+        const newBody = [
+          "I work across all layers of design—strategic foundations, user journeys, and precise microinteractions.",
+          "As a design leader, I bridge the gap between design and development, building empathy for users across tech teams.",
+          "I'm also invested in design operations, guiding designers toward more efficient workflows with AI and emerging tools.",
+        ].join(" ");
+
         function getNextIndex(current) {
           if (greetings.length < 2) return current;
           let next = current;
@@ -87,6 +95,9 @@
           let display = "";
           let deleting = false;
 
+          const { width: initialW, height: initialH } =
+            targetEl.getBoundingClientRect();
+
           const textSpan = document.createElement("span");
           textSpan.className = "typing-greeting-text";
           textSpan.style.display = "inline-block";
@@ -98,8 +109,11 @@
           // Ensure container keeps its footprint even when empty
           targetEl.style.display = "inline-flex";
           targetEl.style.alignItems = "baseline";
-          targetEl.style.minHeight = "1.2em";
-          targetEl.style.minWidth = "12ch";
+          targetEl.style.gap = "6px";
+          targetEl.style.minHeight = initialH ? `${initialH}px` : "1.2em";
+          targetEl.style.minWidth =
+            initialW && initialW > 0 ? `${initialW}px` : "12ch";
+          targetEl.style.whiteSpace = "nowrap";
 
           function step() {
             const currentGreeting = greetings[phraseIndex];
@@ -133,6 +147,35 @@
           step();
         }
 
+        function updateCopy(root) {
+          const introPara = root.querySelector(
+            "#welcome p:has(br)"
+          );
+          if (introPara) {
+            introPara.innerHTML = newIntroLine.replace(/\n/g, "<br>");
+          }
+
+          const bodyPara = root.querySelector(
+            "#welcome p:not(:has(br)):not(.typing-greeting)"
+          );
+          if (bodyPara) {
+            bodyPara.textContent = newBody;
+            bodyPara.style.maxWidth = "min(92vw, 540px)";
+          }
+        }
+
+        function activateTyping(root) {
+          const heroSpan =
+            root.querySelector("#welcome span[class*='Plex_Mono']") ||
+            root.querySelector("#welcome p span");
+          if (heroSpan) {
+            heroSpan.textContent = targetText;
+            startTyping(heroSpan);
+            return true;
+          }
+          return false;
+        }
+
         function tryActivate(root) {
           const walker = document.createTreeWalker(
             root,
@@ -151,16 +194,18 @@
             return true;
           }
 
-          return false;
+          return activateTyping(root);
         }
 
         function setup() {
           const root = document.getElementById("root");
           if (!root) return;
 
+          updateCopy(root);
           if (tryActivate(root)) return;
 
           const observer = new MutationObserver(() => {
+            updateCopy(root);
             if (tryActivate(root)) {
               observer.disconnect();
             }

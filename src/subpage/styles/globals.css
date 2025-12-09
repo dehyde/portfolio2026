@@ -230,3 +230,35 @@ html {
   font-weight: 700 !important;
   opacity: 1;
 }
+
+.text-lg-strong {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.4;
+  opacity: 1;
+}
+
+.text-lg-regular {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 1;
+}
+
+.text-sm-strong {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.6;
+  opacity: 1;
+}
+
+.text-sm-regular {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 400;
+  line-height: 1.6;
+  opacity: 0.62;
+}

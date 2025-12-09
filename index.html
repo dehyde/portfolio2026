@@ -7,9 +7,218 @@
       <title>Portfolio Home Screen</title>
     </head>
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (() => {
+        const style = document.createElement("style");
+        style.textContent = `
+          #root #welcome p {
+            max-width: min(92vw, 540px);
+            width: auto;
+          }
+          #root #welcome .typing-greeting {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            min-height: 1.2em;
+            min-width: 12ch;
+            line-height: 1.05;
+            vertical-align: baseline;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+          }
+          #root #welcome .typing-greeting-text {
+            display: inline-block;
+            min-width: 12ch;
+          }
+          #root #welcome .typing-greeting + span br[aria-hidden="true"] {
+            line-height: 1;
+          }
+        `;
+        document.head.appendChild(style);
+
+        const greetings = [
+          "Hello",
+          "Hi",
+          "Hey",
+          "Yo",
+          "Sup",
+          "What\u2019s up",
+          "Hello, world",
+          "Aloha",
+          "Howdy",
+          "Hiya",
+          "Oh hi there",
+          "How you doin\u2019",
+          "Hey you",
+          "Look who\u2019s here",
+          "Well hello",
+          "Greetings",
+          "Ahoy",
+          "Yo yo",
+          "Heyo",
+          "Welcome",
+          "Hi friend",
+          "Good to see you",
+          "\ud83d\udc40 oh hi",
+          "\ud83d\udc4b hello",
+        ];
+
+        const targetText = "Hello_World!";
+
+        const newIntroLine = [
+          "I'm a principal UX Lead @ Autodesk",
+          "Product & interaction design educator @ Haifa University",
+        ].join("\n");
+
+        const newBody = [
+          "I work across all layers of design—strategic foundations, user journeys, and precise microinteractions.",
+          "As a design leader, I bridge the gap between design and development, building empathy for users across tech teams.",
+          "I'm also invested in design operations, guiding designers toward more efficient workflows with AI and emerging tools.",
+        ].join(" ");
+
+        function getNextIndex(current) {
+          if (greetings.length < 2) return current;
+          let next = current;
+          while (next === current) {
+            next = Math.floor(Math.random() * greetings.length);
+          }
+          return next;
+        }
+
+        function startTyping(targetEl) {
+          let phraseIndex = Math.floor(Math.random() * greetings.length);
+          let display = "";
+          let deleting = false;
+
+          const { width: initialW, height: initialH } =
+            targetEl.getBoundingClientRect();
+
+          const textSpan = document.createElement("span");
+          textSpan.className = "typing-greeting-text";
+          textSpan.style.display = "inline-block";
+
+          targetEl.textContent = "";
+          targetEl.classList.add("typing-greeting");
+          targetEl.append(textSpan);
+
+          // Ensure container keeps its footprint even when empty
+          targetEl.style.display = "inline-flex";
+          targetEl.style.alignItems = "baseline";
+          targetEl.style.gap = "6px";
+          targetEl.style.minHeight = initialH ? `${initialH}px` : "1.2em";
+          targetEl.style.minWidth =
+            initialW && initialW > 0 ? `${initialW}px` : "12ch";
+          targetEl.style.whiteSpace = "nowrap";
+
+          function step() {
+            const currentGreeting = greetings[phraseIndex];
+            const glyphs = Array.from(currentGreeting);
+            const displayGlyphs = Array.from(display);
+
+            if (!deleting && display === currentGreeting) {
+              setTimeout(() => {
+                deleting = true;
+                step();
+              }, 1200);
+              return;
+            }
+
+            if (deleting && display === "") {
+              deleting = false;
+              phraseIndex = getNextIndex(phraseIndex);
+              setTimeout(step, 150);
+              return;
+            }
+
+            const nextLength = deleting
+              ? displayGlyphs.length - 1
+              : displayGlyphs.length + 1;
+
+            display = glyphs.slice(0, Math.max(nextLength, 0)).join("");
+            textSpan.textContent = display || "\u00a0";
+            setTimeout(step, deleting ? 50 : 90);
+          }
+
+          step();
+        }
+
+        function updateCopy(root) {
+          const introPara = root.querySelector(
+            "#welcome p:has(br)"
+          );
+          if (introPara) {
+            introPara.innerHTML = newIntroLine.replace(/\n/g, "<br>");
+          }
+
+          const bodyPara = root.querySelector(
+            "#welcome p:not(:has(br)):not(.typing-greeting)"
+          );
+          if (bodyPara) {
+            bodyPara.textContent = newBody;
+            bodyPara.style.maxWidth = "min(92vw, 540px)";
+          }
+        }
+
+        function activateTyping(root) {
+          const heroSpan =
+            root.querySelector("#welcome span[class*='Plex_Mono']") ||
+            root.querySelector("#welcome p span");
+          if (heroSpan) {
+            heroSpan.textContent = targetText;
+            startTyping(heroSpan);
+            return true;
+          }
+          return false;
+        }
+
+        function tryActivate(root) {
+          const walker = document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_TEXT,
+            {
+              acceptNode: (node) =>
+                node.nodeValue && node.nodeValue.includes(targetText)
+                  ? NodeFilter.FILTER_ACCEPT
+                  : NodeFilter.FILTER_SKIP,
+            }
+          );
+
+          const match = walker.nextNode();
+          if (match && match.parentElement) {
+            startTyping(match.parentElement);
+            return true;
+          }
+
+          return activateTyping(root);
+        }
+
+        function setup() {
+          const root = document.getElementById("root");
+          if (!root) return;
+
+          updateCopy(root);
+          if (tryActivate(root)) return;
+
+          const observer = new MutationObserver(() => {
+            updateCopy(root);
+            if (tryActivate(root)) {
+              observer.disconnect();
+            }
+          });
+
+          observer.observe(root, { childList: true, subtree: true });
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", setup);
+        } else {
+          setup();
+        }
+      })();
+    </script>
+  </body>
+</html>
   
