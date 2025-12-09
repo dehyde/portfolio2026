@@ -120,7 +120,9 @@ function Group1() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0">
       <p className="[grid-area:1_/_1] font-['IBM_Plex_Sans:ExtraLight',sans-serif] h-[43.125px] leading-[normal] ml-0 mt-0 not-italic relative text-[#2c2c2c] text-[16.967px] w-[313.89px]">
-        I'm a principal product 💎 UX designer @ Autodesk and educator from Haifa ☮️
+        I'm a principal UX Lead @ Autodesk
+        <br />
+        and product design educator for 5 years+
       </p>
     </div>
   );
@@ -150,18 +152,18 @@ function Frame12() {
 function Frame13() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[40px] md:gap-[70px] items-start left-[20px] md:left-[626px] top-[80px] md:top-[134px] max-w-[calc(100%-40px)] md:max-w-[335.099px]">
-      <p className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif] italic leading-[0.94] relative shrink-0 text-[#2c2c2c] text-[28px] md:text-[42.418px] w-full md:w-[335.099px]">
-        <span className="font-['IBM_Plex_Mono:Bold_Italic',sans-serif]">
+      <p className="font-['IBM_Plex_Sans:Bold',sans-serif] not-italic leading-[0.94] relative shrink-0 text-[#2c2c2c] text-[28px] md:text-[42.418px] w-full md:w-[335.099px]">
+        <span className="font-['IBM_Plex_Mono:Bold',sans-serif]">
           Hello_World!
         </span>
         <span>
           {" "}
           <br aria-hidden="true" />
         </span>
-        <span className="font-['IBM_Plex_Sans:Light_Italic',sans-serif]">
+        <span className="font-['IBM_Plex_Sans:Light',sans-serif]">
           My name is
         </span>
-        <span className="font-['IBM_Plex_Sans:Italic',sans-serif]">
+        <span className="font-['IBM_Plex_Sans:Regular',sans-serif]">
           {" "}
         </span>
         Tom
@@ -250,8 +252,8 @@ function Frame4() {
   return (
     <div className="flex flex-col gap-[6px] items-start relative shrink-0 text-[#2c2c2c] justify-between h-auto md:h-[450px] w-full md:w-auto">
       <div className="flex flex-col gap-[6px]">
-        <p className="font-['IBM_Plex_Sans:Italic',sans-serif] italic leading-[0.94] relative shrink-0 text-[25px] w-full md:w-[157px]">
-          <span className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif]">{`Autodesk `}</span>
+        <p className="font-['IBM_Plex_Sans:Regular',sans-serif] not-italic leading-[0.94] relative shrink-0 text-[25px] w-full md:w-[157px]">
+          <span className="font-['IBM_Plex_Sans:Bold',sans-serif]">{`Autodesk `}</span>
           platform data system enablement
         </p>
         <p className="font-['IBM_Plex_Sans:ExtraLight',sans-serif] leading-[normal] not-italic relative shrink-0 text-[16.967px] w-full md:w-[214px]">{`Multi-layered project to enable module and project level integration of account custom data & data standardisation infrastructure`}</p>
@@ -351,9 +353,9 @@ function Frame5() {
   return (
     <div className="flex flex-col gap-[6px] items-start relative shrink-0 text-[#2c2c2c] justify-between h-auto md:h-[490px] w-full md:w-auto">
       <div className="flex flex-col gap-[6px]">
-        <div className="font-['IBM_Plex_Sans:Italic',sans-serif] italic leading-[0.94] relative shrink-0 text-[25px] w-full md:w-[157px]">
+        <div className="font-['IBM_Plex_Sans:Regular',sans-serif] not-italic leading-[0.94] relative shrink-0 text-[25px] w-full md:w-[157px]">
           <p className="mb-0">
-            <span className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif] italic">
+            <span className="font-['IBM_Plex_Sans:Bold',sans-serif] not-italic">
               Augury
             </span>
             <span>
@@ -439,7 +441,7 @@ function CaseStudy1() {
 function Frame18() {
   return (
     <div className="bg-[#f0fe50] content-stretch flex items-start relative shrink-0">
-      <p className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif] italic leading-[normal] relative shrink-0 text-[#2c2c2c] text-[16.967px] text-nowrap whitespace-pre">
+      <p className="font-['IBM_Plex_Sans:Bold',sans-serif] not-italic leading-[normal] relative shrink-0 text-[#2c2c2c] text-[16.967px] text-nowrap whitespace-pre">
         <span className="font-['IBM_Plex_Sans:Regular',sans-serif] not-italic">{`🚧 `}</span>
         Completion status ~80%
       </p>
@@ -451,8 +453,8 @@ function Frame6() {
   return (
     <div className="flex flex-col gap-[6px] items-start relative shrink-0 justify-between h-auto md:h-[450px] w-full md:w-auto">
       <div className="flex flex-col gap-[6px]">
-        <p className="font-['IBM_Plex_Sans:Italic',sans-serif] italic leading-[0.94] relative shrink-0 text-[#2c2c2c] text-[25px] w-full md:w-[157px]">
-          <span className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif]">{`Shutterfly `}</span>
+        <p className="font-['IBM_Plex_Sans:Regular',sans-serif] not-italic leading-[0.94] relative shrink-0 text-[#2c2c2c] text-[25px] w-full md:w-[157px]">
+          <span className="font-['IBM_Plex_Sans:Bold',sans-serif]">{`Shutterfly `}</span>
           Cards shopping refactor
         </p>
         <p className="font-['IBM_Plex_Sans:ExtraLight',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#2c2c2c] text-[16.967px] w-full md:w-[214px]">
@@ -531,9 +533,9 @@ function Frame9() {
   return (
     <div className="flex flex-col gap-[6px] items-start relative shrink-0 text-[#2c2c2c] justify-between h-[486px]">
       <div className="flex flex-col gap-[6px]">
-        <div className="font-['IBM_Plex_Sans:Italic',sans-serif] italic leading-[0.94] relative shrink-0 text-[25px] w-[157px]">
+        <div className="font-['IBM_Plex_Sans:Regular',sans-serif] not-italic leading-[0.94] relative shrink-0 text-[25px] w-[157px]">
           <p className="mb-0">
-            <span className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif] italic">
+            <span className="font-['IBM_Plex_Sans:Bold',sans-serif] not-italic">
               Amplio
             </span>
             <span>
@@ -548,9 +550,9 @@ function Frame9() {
           Restructure of Amplio's core interfaces and flows in
           hyper-lean processes
         </p>
-        <p className="font-['IBM_Plex_Sans:ExtraLight_Italic',sans-serif] italic leading-[normal] relative shrink-0 text-[16.967px] w-[214px]">
+        <p className="font-['IBM_Plex_Sans:ExtraLight',sans-serif] not-italic leading-[normal] relative shrink-0 text-[16.967px] w-[214px]">
           <span>{`Case study completion status: `}</span>
-          <span className="font-['IBM_Plex_Sans:Bold_Italic',sans-serif]">
+          <span className="font-['IBM_Plex_Sans:Bold',sans-serif]">
             0% 😥
           </span>
         </p>
@@ -638,7 +640,7 @@ function Frame10() {
             <div className="bg-[#f0fe50] h-[109.864px] rounded-[69.462px] w-[239.646px]" />
           </div>
         </div>
-        <p className="absolute font-['IBM_Plex_Sans:SemiBold_Italic',sans-serif] h-[39px] italic leading-[0.94] left-[156.5px] text-[#2c2c2c] text-[35px] text-center top-[45.34px] translate-x-[-50%] w-[293px]">
+        <p className="absolute font-['IBM_Plex_Sans:SemiBold',sans-serif] h-[39px] not-italic leading-[0.94] left-[156.5px] text-[#2c2c2c] text-[35px] text-center top-[45.34px] translate-x-[-50%] w-[293px]">
           Case Studies
         </p>
         <p
@@ -704,7 +706,7 @@ function ContactSection() {
       </div>
       <Frame8 />
       <p
-        className="absolute font-['IBM_Plex_Sans:SemiBold_Italic',sans-serif] h-[39px] italic leading-[0.94] left-[50%] md:left-[626.5px] text-[#2c2c2c] text-[35px] text-center top-[74.46px] translate-x-[-50%] w-[293px]"
+        className="absolute font-['IBM_Plex_Sans:SemiBold',sans-serif] h-[39px] not-italic leading-[0.94] left-[50%] md:left-[626.5px] text-[#2c2c2c] text-[35px] text-center top-[74.46px] translate-x-[-50%] w-[293px]"
         dir="auto"
       >
         Contact
