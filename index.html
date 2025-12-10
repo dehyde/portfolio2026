@@ -146,16 +146,38 @@
         }
 
         function updateCopy(root) {
-          const introPara = root.querySelector(
-            "#welcome p:has(br)"
-          );
+          const paras = Array.from(root.querySelectorAll("#welcome p"));
+          const heroPara =
+            paras.find((p) => p.querySelector(".typing-greeting")) ||
+            paras.find((p) => p.textContent.includes("Hello_World!"));
+
+          const introPara =
+            paras.find(
+              (p) =>
+                p !== heroPara &&
+                (p.textContent.includes("principal UX") ||
+                  p.textContent.includes("product design"))
+            ) ||
+            paras.find(
+              (p) => p !== heroPara && p.className.includes("w-[313")
+            );
+
+          const bodyPara =
+            paras.find(
+              (p) => p !== heroPara && p !== introPara && p.textContent.length > 80
+            ) ||
+            paras.find(
+              (p) =>
+                p !== heroPara &&
+                p !== introPara &&
+                p.className.includes("w-[335")
+            );
+
           if (introPara) {
             introPara.innerHTML = newIntroLine.replace(/\n/g, "<br>");
+            introPara.style.maxWidth = "min(92vw, 540px)";
           }
 
-          const bodyPara = root.querySelector(
-            "#welcome p:not(:has(br)):not(.typing-greeting)"
-          );
           if (bodyPara) {
             bodyPara.textContent = newBody;
             bodyPara.style.maxWidth = "min(92vw, 540px)";
