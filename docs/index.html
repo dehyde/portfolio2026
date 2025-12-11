@@ -24,6 +24,7 @@
           #root #welcome p {
             max-width: min(92vw, 540px);
             width: auto;
+            margin: 0;
           }
           #root #welcome .typing-greeting {
             display: inline-flex;
@@ -39,6 +40,9 @@
           #root #welcome .typing-greeting-text {
             display: inline-block;
             min-width: 12ch;
+          }
+          #root #welcome {
+            min-height: 700px;
           }
           #root #welcome .typing-greeting + span br[aria-hidden="true"] {
             line-height: 1;
@@ -156,14 +160,16 @@
           if (introPara) {
             introPara.innerHTML = newIntroLine.replace(/\n/g, "<br>");
             introPara.style.maxWidth = "min(92vw, 540px)";
+            introPara.style.marginTop = "6px";
+            introPara.style.marginBottom = "8px";
           }
 
           if (bodyPara) {
-          bodyPara.textContent = newBody;
-          bodyPara.style.maxWidth = "min(92vw, 540px)";
-          bodyPara.style.lineHeight = "1.65";
-          bodyPara.style.marginTop = "12px";
-        }
+            bodyPara.textContent = newBody;
+            bodyPara.style.maxWidth = "min(92vw, 540px)";
+            bodyPara.style.lineHeight = "1.55";
+            bodyPara.style.marginTop = "18px";
+          }
         }
 
         function activateTyping(root) {
@@ -173,6 +179,10 @@
           if (heroSpan) {
             heroSpan.textContent = greetings[0];
             startTyping(heroSpan);
+            const heroPara = heroSpan.closest("p");
+            if (heroPara) {
+              heroPara.style.marginBottom = "6px";
+            }
             return true;
           }
           return false;
