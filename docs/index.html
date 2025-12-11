@@ -10,9 +10,9 @@
       <link rel="apple-touch-icon" href="/portfolio2026/assets/favicons/apple-touch-icon.png" />
       <link rel="manifest" href="/portfolio2026/assets/favicons/site.webmanifest" />
       <meta name="theme-color" content="#EEFF00" />
-      <script type="module" crossorigin src="/portfolio2026/assets/main-CqKK9xr9.js?v=linkfix"></script>
-      <link rel="modulepreload" crossorigin href="/portfolio2026/assets/index-qIi89WO2.js?v=linkfix">
-      <link rel="stylesheet" crossorigin href="/portfolio2026/assets/main-BCWFNqUb.css?v=linkfix">
+      <script type="module" crossorigin src="/portfolio2026/assets/main-CqKK9xr9.js?v=imgfix2"></script>
+      <link rel="modulepreload" crossorigin href="/portfolio2026/assets/index-qIi89WO2.js?v=imgfix2">
+      <link rel="stylesheet" crossorigin href="/portfolio2026/assets/main-BCWFNqUb.css?v=imgfix2">
     </head>
 
   <body>
@@ -46,6 +46,23 @@
           }
           #root #welcome .typing-greeting + span br[aria-hidden="true"] {
             line-height: 1;
+          }
+          @media (min-width: 768px) {
+            #root #contact a:hover p { text-decoration: underline; }
+
+            #root #welcome [data-name="PXL_20210906_092829339 1"] {
+              position: absolute;
+              bottom: 0 !important;
+              top: auto !important;
+            }
+            #root #welcome [data-name="PXL_20210906_092829339 1"] img {
+              object-position: center bottom !important;
+            }
+            #root #welcome .hidden.md\\:block {
+              display: flex !important;
+              align-items: flex-end;
+              height: 100%;
+            }
           }
         `;
         document.head.appendChild(style);
@@ -101,32 +118,8 @@
 
         function startTyping(targetEl) {
           const defaultGreeting = greetings[0];
-          const hoverGreetings = greetings.slice(1);
-          let intervalId = null;
-
           targetEl.textContent = defaultGreeting;
           targetEl.style.whiteSpace = "nowrap";
-
-          function startCycle() {
-            if (!hoverGreetings.length || intervalId) return;
-            let idx = 0;
-            targetEl.textContent = hoverGreetings[idx];
-            intervalId = setInterval(() => {
-              idx = (idx + 1) % hoverGreetings.length;
-              targetEl.textContent = hoverGreetings[idx];
-            }, 950);
-          }
-
-          function stopCycle() {
-            if (intervalId) {
-              clearInterval(intervalId);
-              intervalId = null;
-            }
-            targetEl.textContent = defaultGreeting;
-          }
-
-          targetEl.addEventListener("mouseenter", startCycle);
-          targetEl.addEventListener("mouseleave", stopCycle);
         }
 
         function updateCopy(root) {
