@@ -47,6 +47,7 @@
         document.head.appendChild(style);
 
         const greetings = [
+          "\ud83d\udc4b hello",
           "Hello",
           "Hi",
           "Hey",
@@ -70,20 +71,20 @@
           "Hi friend",
           "Good to see you",
           "\ud83d\udc40 oh hi",
-          "\ud83d\udc4b hello",
         ];
 
         const targetText = "Hello_World!";
 
         const newIntroLine = [
-          "I'm a principal UX Lead @ Autodesk",
-          "Product & interaction design educator @ Haifa University",
+          "I'm a <i>principal UX Lead</i> @ Autodesk",
+          "Product ",
+          "& interaction design <i>educator</i> @ Haifa University",
         ].join("\n");
 
         const newBody = [
-          "I work across all layers of design—strategic foundations, user journeys, and precise microinteractions.",
-          "As a design lead, I bridge the gap between design and development, building empathy for users across tech teams.",
-          "I'm also invested in design operations, guiding designers toward more efficient workflows with AI and emerging tools.",
+          "I like thinking across all layers of design - from theory through strategic thinking, journeys, and down to microinteractions and copy.",
+          "As a design lead and educator, I put an emphasis on educating the development teams and my students on the reasoning behind decisions and on building empathy and a stronger concept of users.",
+          "I'm also investing time in design operations - finding ways to streamline our processes through organizational, methodological and technological tools.",
         ].join(" ");
 
         function getNextIndex(current) {
@@ -96,60 +97,33 @@
         }
 
         function startTyping(targetEl) {
-          let phraseIndex = Math.floor(Math.random() * greetings.length);
-          let display = "";
-          let deleting = false;
+          const defaultGreeting = greetings[0];
+          const hoverGreetings = greetings.slice(1);
+          let intervalId = null;
 
-          const { width: initialW, height: initialH } =
-            targetEl.getBoundingClientRect();
-
-          const textSpan = document.createElement("span");
-          textSpan.className = "typing-greeting-text";
-          textSpan.style.display = "inline-block";
-
-          targetEl.textContent = "";
-          targetEl.classList.add("typing-greeting");
-          targetEl.append(textSpan);
-
-          // Ensure container keeps its footprint even when empty
-          targetEl.style.display = "inline-flex";
-          targetEl.style.alignItems = "baseline";
-          targetEl.style.gap = "6px";
-          targetEl.style.minHeight = initialH ? `${initialH}px` : "1.2em";
-          targetEl.style.minWidth =
-            initialW && initialW > 0 ? `${initialW}px` : "12ch";
+          targetEl.textContent = defaultGreeting;
           targetEl.style.whiteSpace = "nowrap";
 
-          function step() {
-            const currentGreeting = greetings[phraseIndex];
-            const glyphs = Array.from(currentGreeting);
-            const displayGlyphs = Array.from(display);
-
-            if (!deleting && display === currentGreeting) {
-              setTimeout(() => {
-                deleting = true;
-                step();
-              }, 1200);
-              return;
-            }
-
-            if (deleting && display === "") {
-              deleting = false;
-              phraseIndex = getNextIndex(phraseIndex);
-              setTimeout(step, 150);
-              return;
-            }
-
-            const nextLength = deleting
-              ? displayGlyphs.length - 1
-              : displayGlyphs.length + 1;
-
-            display = glyphs.slice(0, Math.max(nextLength, 0)).join("");
-            textSpan.textContent = display || "\u00a0";
-            setTimeout(step, deleting ? 50 : 90);
+          function startCycle() {
+            if (!hoverGreetings.length || intervalId) return;
+            let idx = 0;
+            targetEl.textContent = hoverGreetings[idx];
+            intervalId = setInterval(() => {
+              idx = (idx + 1) % hoverGreetings.length;
+              targetEl.textContent = hoverGreetings[idx];
+            }, 950);
           }
 
-          step();
+          function stopCycle() {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+            targetEl.textContent = defaultGreeting;
+          }
+
+          targetEl.addEventListener("mouseenter", startCycle);
+          targetEl.addEventListener("mouseleave", stopCycle);
         }
 
         function updateCopy(root) {
@@ -196,7 +170,7 @@
             root.querySelector("#welcome span[class*='Plex_Mono']") ||
             root.querySelector("#welcome p span");
           if (heroSpan) {
-            heroSpan.textContent = targetText;
+            heroSpan.textContent = greetings[0];
             startTyping(heroSpan);
             return true;
           }
