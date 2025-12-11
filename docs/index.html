@@ -76,9 +76,8 @@
         const targetText = "Hello_World!";
 
         const newIntroLine = [
-          "I'm a <i>principal UX Lead</i> @ Autodesk",
-          "Product ",
-          "& interaction design <i>educator</i> @ Haifa University",
+          "I'm a <i> principal UX Lead </i> @ Autodesk",
+          "Product & <i> interaction design educator</i> @ Haifa University",
         ].join("\n");
 
         const newBody = [
@@ -160,9 +159,11 @@
           }
 
           if (bodyPara) {
-            bodyPara.textContent = newBody;
-            bodyPara.style.maxWidth = "min(92vw, 540px)";
-          }
+          bodyPara.textContent = newBody;
+          bodyPara.style.maxWidth = "min(92vw, 540px)";
+          bodyPara.style.lineHeight = "1.65";
+          bodyPara.style.marginTop = "12px";
+        }
         }
 
         function activateTyping(root) {
