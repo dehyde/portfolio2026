@@ -10,28 +10,23 @@ const source = readFileSync(
 const goals = [
   {
     chapterId: 'collaboration',
-    title: 'Establish a shared way of working',
+    title: 'Managing challenges of cross-team collaboration',
     decisionIds: ['shared-brief', 'joint-research', 'working-overlap', 'logic-prototypes'],
   },
   {
     chapterId: 'project-flexibility',
-    title: 'Enable flexible custom data in project workflows',
-    decisionIds: ['custom-data-in-submittals', 'module-specific-controls'],
+    title: 'Creating cohesion across products',
+    decisionIds: ['use-aec-data-components', 'adapt-cad-components', 'maintain-construction-patterns', 'keep-module-controls'],
   },
   {
     chapterId: 'reuse-before-creation',
-    title: 'Make reuse easier than duplicate creation',
+    title: 'Making reuse the default',
     decisionIds: ['find-existing-definitions', 'create-when-needed'],
   },
   {
     chapterId: 'standards-governance',
-    title: 'Govern standards without making projects brittle',
+    title: 'Balancing project autonomy with account standards',
     decisionIds: ['separate-governance-scope', 'preserve-applied-values', 'make-changes-visible'],
-  },
-  {
-    chapterId: 'cross-product-reuse',
-    title: 'Reuse the model while making it native to Construction Cloud',
-    decisionIds: ['reuse-platform-logic', 'translate-cad-interactions', 'extend-construction-cloud-patterns'],
   },
 ];
 
@@ -80,4 +75,12 @@ test('keeps only real chapters in the reader navigation', () => {
   assert.match(source, /<section class="chapter decision-chapter" id="decision" data-chapter hidden aria-hidden="true">/);
   assert.match(source, /<section class="chapter learning" id="learning" data-chapter hidden aria-hidden="true">/);
   assert.match(source, /querySelectorAll\('\[data-chapter\]:not\(\[hidden\]\)'\)/);
+  assert.match(source, /<section class="chapter" id="cross-product-reuse" data-chapter hidden aria-hidden="true">/);
+  assert.match(source, /<section class="chapter" id="validation" data-chapter hidden aria-hidden="true">/);
+});
+
+test('preserves the approved opening and collaboration copy', () => {
+  assert.match(source, /<h2 class="type-display">Custom data management UX across account and project levels\.<\/h2>/);
+  assert.match(source, /<h2 class="chapter-title type-section">Managing challenges of cross-team collaboration<\/h2>/);
+  assert.match(source, /<p class="chapter-summary type-summary">How we collaborated successfully and mitigated gaps<\/p>/);
 });
