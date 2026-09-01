@@ -127,6 +127,8 @@
     }
     .nested-rail a.active, .nested-rail button.active { color: var(--accent); }
     .nested-rail .number { font-variant-numeric: tabular-nums; }
+    .nested-rail.goal-nested { display: none; }
+    .nested-rail.goal-nested.expanded { display: grid; }
     .rail-foot { margin-top: auto; }
 
     main { width: min(100%, 1880px); min-width: 0; margin-inline: auto; }
@@ -230,7 +232,7 @@
       background: var(--surface-canvas);
     }
     .chapter-heading .type-label { margin-bottom: 16px; }
-    .chapter-title { max-width: 10ch; }
+    .chapter-title { max-width: 29ch; }
     .chapter-summary { max-width: 29ch; margin-top: clamp(34px, 5vw, 72px); }
     .goal-decision-overview {
       display: grid;
@@ -271,33 +273,48 @@
     .goal-decision { scroll-margin-top: calc(var(--bar-h) + 24px); }
     .goal-frame {
       --goal-summary-h: calc(100vh - var(--bar-h));
+      --goal-scroll-x: 0px;
       position: relative;
       min-height: var(--goal-summary-h);
-      overflow: clip;
+      overflow-x: auto;
+      overflow-y: clip;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: none;
       background: var(--surface-canvas);
+      touch-action: pan-y;
     }
-    .goal-summary { min-height: var(--goal-summary-h); }
+    .goal-frame::-webkit-scrollbar { display: none; }
+    .goal-scroll-range { width: 200%; height: 1px; position: absolute; top: 0; left: 0; pointer-events: none; }
+    .goal-summary {
+      min-height: var(--goal-summary-h);
+      position: sticky;
+      top: var(--bar-h);
+      z-index: 1;
+      transform: translate3d(var(--goal-scroll-x), 0, 0);
+    }
     .goal-takeover {
+      --goal-offset: 100%;
       position: relative;
       z-index: 8;
-      max-height: 0;
+      min-height: var(--goal-summary-h);
+      max-height: var(--goal-summary-h);
+      margin-top: calc(var(--bar-h) - 100vh);
       overflow: hidden;
       visibility: hidden;
       pointer-events: none;
       background: var(--surface-canvas);
-      transform: translateX(100%);
+      transform: translate3d(calc(var(--goal-offset) + var(--goal-scroll-x)), 0, 0);
       will-change: transform;
     }
+    .goal-frame[data-state="interacting"] .goal-takeover,
+    .goal-frame[data-state="closing"] .goal-takeover,
+    .goal-frame[data-state="open"] .goal-takeover { visibility: visible; pointer-events: auto; }
     .goal-frame[data-expanded="true"] .goal-takeover {
       max-height: none;
-      min-height: var(--goal-summary-h);
-      margin-top: calc(-1 * var(--goal-summary-h));
       overflow: visible;
-      visibility: visible;
-      pointer-events: auto;
     }
-    .goal-frame[data-state="open"] .goal-takeover { transform: translateX(0); transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
-    .goal-frame[data-state="closing"] .goal-takeover { transform: translateX(100%); transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
+    .goal-frame.settling .goal-takeover { transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
+    .goal-frame.dragging, .goal-frame.dragging * { cursor: grabbing !important; user-select: none; }
     .goal-return-wrap {
       position: sticky;
       top: calc(var(--bar-h) + 18px);
@@ -561,14 +578,18 @@
       .rail-main > a, .rail-main > a.active { max-width: none; white-space: nowrap; padding: 8px 10px; font: 480 13px/1.25 var(--font-system); font-variation-settings: var(--font-system-formal); letter-spacing: 0; }
       .rail-main > a::before { display: none; }
       .nested-rail { margin: 0 6px 0 0; padding: 0; display: flex; gap: 4px; }
+      .nested-rail.goal-nested { display: none; }
+      .nested-rail.goal-nested.expanded { display: flex; }
       .nested-rail a, .nested-rail button { padding: 8px 9px; display: flex; gap: 5px; white-space: nowrap; font-size: 12px; }
       .hero { padding-left: 24px; padding-right: 24px; }
       .hero-visual { min-height: 410px; }
       .chapter-opener { min-height: 0; padding: 76px 24px; }
+      .chapter-title { max-width: 19ch; }
       .chapter-summary { max-width: 19ch; }
       .goal-decision-overview { grid-auto-columns: minmax(78vw, 1fr); margin-top: 42px; }
       .goal-decision-card { min-height: 154px; padding: 18px; }
       .goal-frame { --goal-summary-h: calc(100vh - var(--bar-h) - 62px); }
+      .goal-takeover { margin-top: calc(var(--bar-h) + 62px - 100vh); }
       .goal-return-wrap { top: calc(var(--bar-h) + 74px); padding-left: 16px; }
       .chapter-evidence { padding: 0 24px 76px; }
       .chapter-evidence > * { margin-left: 0; }
@@ -621,30 +642,30 @@
           <li><a href="#problem-definition"><span class="number">03</span><span>Problem definition</span></a></li>
         </ul>
         <a href="#collaboration">Collaboration</a>
-        <ul class="nested-rail" aria-label="Collaboration decisions">
+        <ul class="nested-rail goal-nested" aria-label="Collaboration decisions">
           <li><a href="#shared-brief"><span class="number">01</span><span>Shared goals</span></a></li>
           <li><a href="#joint-research"><span class="number">02</span><span>Joint research</span></a></li>
           <li><a href="#working-overlap"><span class="number">03</span><span>Working overlap</span></a></li>
           <li><a href="#logic-prototypes"><span class="number">04</span><span>Logic prototypes</span></a></li>
         </ul>
         <a href="#project-flexibility">Flexible data</a>
-        <ul class="nested-rail" aria-label="Flexible data decisions">
+        <ul class="nested-rail goal-nested" aria-label="Flexible data decisions">
           <li><a href="#custom-data-in-submittals"><span class="number">01</span><span>Custom data</span></a></li>
           <li><a href="#module-specific-controls"><span class="number">02</span><span>Module controls</span></a></li>
         </ul>
         <a href="#reuse-before-creation">Reuse</a>
-        <ul class="nested-rail" aria-label="Reuse decisions">
+        <ul class="nested-rail goal-nested" aria-label="Reuse decisions">
           <li><a href="#find-existing-definitions"><span class="number">01</span><span>Find existing</span></a></li>
           <li><a href="#create-when-needed"><span class="number">02</span><span>Create when needed</span></a></li>
         </ul>
         <a href="#standards-governance">Governance</a>
-        <ul class="nested-rail" aria-label="Governance decisions">
+        <ul class="nested-rail goal-nested" aria-label="Governance decisions">
           <li><a href="#separate-governance-scope"><span class="number">01</span><span>Separate scope</span></a></li>
           <li><a href="#preserve-applied-values"><span class="number">02</span><span>Preserve values</span></a></li>
           <li><a href="#make-changes-visible"><span class="number">03</span><span>Show consequences</span></a></li>
         </ul>
         <a href="#cross-product-reuse">Cross-product model</a>
-        <ul class="nested-rail" aria-label="Cross-product model decisions">
+        <ul class="nested-rail goal-nested" aria-label="Cross-product model decisions">
           <li><a href="#reuse-platform-logic"><span class="number">01</span><span>Shared logic</span></a></li>
           <li><a href="#translate-cad-interactions"><span class="number">02</span><span>Translate interactions</span></a></li>
           <li><a href="#extend-construction-cloud-patterns"><span class="number">03</span><span>Reusable patterns</span></a></li>
@@ -777,6 +798,7 @@
 
       <section class="chapter" id="collaboration" data-chapter>
         <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">02 / Delivery</div>
@@ -842,6 +864,7 @@
 
       <section class="chapter" id="project-flexibility" data-chapter>
         <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">03 / Goal 1</div>
@@ -885,6 +908,7 @@
 
       <section class="chapter" id="reuse-before-creation" data-chapter>
         <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">04 / Goal 2</div>
@@ -928,6 +952,7 @@
 
       <section class="chapter" id="standards-governance" data-chapter>
         <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">05 / Goal 3</div>
@@ -1075,6 +1100,7 @@
 
       <section class="chapter" id="cross-product-reuse" data-chapter>
         <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">06 / Goal 4</div>
@@ -1271,9 +1297,18 @@
     const subsectionLinks = [...shell.querySelectorAll('.nested-rail a')];
     const subsectionTargets = subsectionLinks.map((link) => ({ link, target: document.querySelector(link.hash) })).filter(({ target }) => target);
     const goalFrames = [...shell.querySelectorAll('[data-goal-dive]')];
+    const goalFrameControllers = new Map();
     const progress = shell.querySelector('.progress span');
     const governanceRail = shell.querySelector('[data-governance-rail]');
     let activeChapterIndex = 0;
+
+    const updateGoalRailState = () => {
+      goalFrames.forEach((frame) => {
+        const decisionLink = subsectionLinks.find((link) => document.querySelector(link.hash)?.closest('[data-goal-dive]') === frame);
+        const rail = decisionLink?.closest('.goal-nested');
+        if (rail) rail.classList.toggle('expanded', frame.dataset.expanded === 'true');
+      });
+    };
 
     const updateSubsectionState = () => {
       const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
@@ -1305,6 +1340,7 @@
         if (isActive) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       });
+      updateGoalRailState();
       updateSubsectionState();
     };
 
@@ -1315,40 +1351,157 @@
       progress.style.setProperty('--progress', `${(travelled / available) * 100}%`);
     };
     const goalSidecarDuration = reduceMotion ? 0 : 520;
-    const openGoalSidecar = (frame, targetId) => {
+    const createGoalSidecarController = (frame) => {
       const takeover = frame.querySelector('[data-goal-takeover]');
-      const target = targetId ? frame.querySelector(`#${targetId}`) : null;
-      if (!takeover) return;
+      const closeButton = frame.querySelector('[data-close-goal]');
+      let revealProgress = 0;
+      let settleTimer = 0;
+      let delayedCloseTimer = 0;
+      let suppressNativeScrollEnd = false;
+      let scrollSyncFrame = 0;
+      let pointerGesture = null;
 
-      frame.dataset.expanded = 'true';
-      frame.dataset.state = 'opening';
-      takeover.setAttribute('aria-hidden', 'false');
-      window.requestAnimationFrame(() => { frame.dataset.state = 'open'; });
-      window.setTimeout(() => {
+      const setRevealProgress = (nextProgress) => {
+        revealProgress = Math.min(1, Math.max(0, nextProgress));
+        takeover.style.setProperty('--goal-offset', `${(1 - revealProgress) * 100}%`);
+        takeover.setAttribute('aria-hidden', String(revealProgress === 0));
+      };
+      const getHorizontalScrollRange = () => Math.max(1, frame.scrollWidth - frame.clientWidth);
+      const syncNativeScrollProgress = (nextProgress) => {
+        const nextScrollLeft = Math.min(1, Math.max(0, nextProgress)) * getHorizontalScrollRange();
+        frame.style.setProperty('--goal-scroll-x', `${nextScrollLeft}px`);
+        if (Math.abs(frame.scrollLeft - nextScrollLeft) <= .5) return;
+        suppressNativeScrollEnd = true;
+        frame.scrollLeft = nextScrollLeft;
+        window.cancelAnimationFrame(scrollSyncFrame);
+        scrollSyncFrame = window.requestAnimationFrame(() => {
+          scrollSyncFrame = window.requestAnimationFrame(() => { suppressNativeScrollEnd = false; });
+        });
+      };
+      const finishSettling = (target, focusSummary) => {
+        frame.classList.remove('settling', 'dragging');
+        syncNativeScrollProgress(target);
+        frame.dataset.state = target ? 'open' : 'closed';
+        frame.dataset.expanded = String(Boolean(target));
+        takeover.setAttribute('aria-hidden', String(!target));
+        if (!target && focusSummary) frame.querySelector('[data-goal-target]')?.focus({ preventScroll: true });
+        updateChapterState();
+        updateProgress();
+      };
+      const settleGoal = (target, { focusSummary = false, returnToStart = false } = {}) => {
+        window.clearTimeout(settleTimer);
+        window.clearTimeout(delayedCloseTimer);
+        goalTrackpadScroll.reset();
+        const commit = () => {
+          frame.classList.add('settling');
+          frame.dataset.state = target ? 'open' : 'closing';
+          if (target) frame.dataset.expanded = 'true';
+          settleTimer = runSettleTransition({
+            target,
+            duration: goalSidecarDuration,
+            schedule: (callback, delay) => window.setTimeout(callback, delay),
+            onVisualTarget: setRevealProgress,
+            onAnimationEnd: (settledTarget) => finishSettling(settledTarget, focusSummary)
+          });
+        };
+        if (!target && returnToStart) {
+          const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+          const sectionTop = window.scrollY + frame.getBoundingClientRect().top - barHeight;
+          if (Math.abs(window.scrollY - sectionTop) > 12) {
+            window.scrollTo({ top: sectionTop, behavior: reduceMotion ? 'auto' : 'smooth' });
+            delayedCloseTimer = window.setTimeout(commit, reduceMotion ? 0 : 360);
+            return;
+          }
+        }
+        commit();
+      };
+      const beginInteraction = () => {
+        window.clearTimeout(settleTimer);
+        window.clearTimeout(delayedCloseTimer);
+        frame.classList.remove('settling');
+        frame.dataset.state = 'interacting';
+        takeover.setAttribute('aria-hidden', 'false');
+      };
+      const goalTrackpadScroll = createTrackpadScrollController({
+        getProgress: () => revealProgress,
+        onSettle: (target, { startProgress }) => settleGoal(target, { returnToStart: target === 0 && startProgress >= .5 })
+      });
+      const revealTarget = (targetId) => {
+        const target = targetId ? frame.querySelector(`#${targetId}`) : null;
         target?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-        updateChapterState();
-        updateProgress();
-      }, goalSidecarDuration + 20);
-    };
-    const closeGoalSidecar = (frame, { focusSummary = false } = {}) => {
-      const takeover = frame.querySelector('[data-goal-takeover]');
-      if (!takeover || frame.dataset.expanded !== 'true') return;
-      frame.dataset.state = 'closing';
-      window.setTimeout(() => {
-        frame.dataset.state = 'closed';
-        frame.dataset.expanded = 'false';
-        takeover.setAttribute('aria-hidden', 'true');
-        if (focusSummary) frame.querySelector('[data-goal-target]')?.focus({ preventScroll: true });
-        updateChapterState();
-        updateProgress();
-      }, goalSidecarDuration);
+      };
+
+      frame.addEventListener('wheel', (event) => {
+        const movementX = -event.deltaX;
+        if (!goalTrackpadScroll.handleWheel({ movementX, movementY: event.deltaY })) return;
+        suppressNativeScrollEnd = false;
+        beginInteraction();
+      }, { passive: true });
+      frame.addEventListener('scroll', () => {
+        const scrollLeft = frame.scrollLeft;
+        frame.style.setProperty('--goal-scroll-x', `${scrollLeft}px`);
+        setRevealProgress(scrollLeft / getHorizontalScrollRange());
+      }, { passive: true });
+      frame.addEventListener('scrollend', () => {
+        if (suppressNativeScrollEnd) return;
+        goalTrackpadScroll.handleScrollEnd();
+      });
+      frame.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || event.target.closest('button, a')) return;
+        pointerGesture = { id: event.pointerId, startX: event.clientX, startY: event.clientY, startProgress: revealProgress, axis: null };
+        frame.setPointerCapture(event.pointerId);
+      });
+      frame.addEventListener('pointermove', (event) => {
+        if (!pointerGesture || pointerGesture.id !== event.pointerId) return;
+        const movementX = event.clientX - pointerGesture.startX;
+        const movementY = event.clientY - pointerGesture.startY;
+        if (!pointerGesture.axis) {
+          if (isHorizontalIntent({ movementX, movementY })) pointerGesture.axis = 'horizontal';
+          else if (Math.abs(movementY) >= 8) pointerGesture.axis = 'vertical';
+        }
+        if (pointerGesture.axis !== 'horizontal') return;
+        event.preventDefault();
+        beginInteraction();
+        frame.classList.add('dragging');
+        setRevealProgress(getRevealProgress({ progress: pointerGesture.startProgress, movementX, width: frame.getBoundingClientRect().width }));
+      });
+      const finishPointerGesture = (event) => {
+        if (!pointerGesture || pointerGesture.id !== event.pointerId) return;
+        if (frame.hasPointerCapture(event.pointerId)) frame.releasePointerCapture(event.pointerId);
+        if (pointerGesture.axis === 'horizontal') {
+          const target = getSnapTarget({ progress: revealProgress, startProgress: pointerGesture.startProgress });
+          settleGoal(target, { returnToStart: target === 0 && pointerGesture.startProgress === 1 });
+        }
+        pointerGesture = null;
+      };
+      frame.addEventListener('pointerup', finishPointerGesture);
+      frame.addEventListener('pointercancel', finishPointerGesture);
+      closeButton.addEventListener('click', () => settleGoal(0, { focusSummary: true, returnToStart: true }));
+
+      return {
+        open(targetId) {
+          if (frame.dataset.expanded === 'true') {
+            revealTarget(targetId);
+            return;
+          }
+          settleGoal(1);
+          window.setTimeout(() => revealTarget(targetId), goalSidecarDuration + 20);
+        },
+        close() { settleGoal(0, { focusSummary: true, returnToStart: true }); }
+      };
     };
     goalFrames.forEach((frame) => {
+      goalFrameControllers.set(frame, createGoalSidecarController(frame));
       frame.querySelectorAll('[data-goal-target]').forEach((button) => {
         button.addEventListener('click', () => openGoalSidecar(frame, button.dataset.goalTarget));
       });
-      frame.querySelector('[data-close-goal]').addEventListener('click', () => closeGoalSidecar(frame, { focusSummary: true }));
     });
+    const openGoalSidecar = (frame, targetId) => {
+      goalFrameControllers.get(frame)?.open(targetId);
+    };
+    const closeGoalSidecar = (frame) => {
+      goalFrameControllers.get(frame)?.close();
+    };
     subsectionLinks.forEach((link) => {
       link.addEventListener('click', (event) => {
         const target = document.querySelector(link.hash);

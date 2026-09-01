@@ -64,6 +64,16 @@ test('opens a goal sidecar from either its overview or the persistent index', ()
   assert.match(source, /target\.closest\('\[data-goal-dive\]'\)/);
 });
 
+test('reuses the gradual horizontal sidecar model for each goal and only exposes its rail detail when open', () => {
+  assert.match(source, /\.goal-frame \{[\s\S]*?overflow-x: auto;[\s\S]*?touch-action: pan-y;/);
+  assert.match(source, /<div class="goal-scroll-range" aria-hidden="true"><\/div>/);
+  assert.match(source, /const createGoalSidecarController = \(frame\) => \{/);
+  assert.match(source, /const goalTrackpadScroll = createTrackpadScrollController\(/);
+  assert.match(source, /goalFrameControllers\.set\(frame, createGoalSidecarController\(frame\)\);/);
+  assert.match(source, /rail\.classList\.toggle\('expanded', frame\.dataset\.expanded === 'true'\)/);
+  assert.match(source, /\.nested-rail\.goal-nested \{ display: none; \}/);
+});
+
 test('keeps only real chapters in the reader navigation', () => {
   assert.doesNotMatch(source, /<a href="#decision">Decision<\/a>/);
   assert.doesNotMatch(source, /<a href="#learning">Learning<\/a>/);
