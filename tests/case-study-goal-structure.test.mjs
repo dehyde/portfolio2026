@@ -20,7 +20,7 @@ const goals = [
   },
   {
     chapterId: 'reuse-before-creation',
-    title: 'Making reuse the default',
+    title: 'Data standardization',
     decisionIds: ['find-existing-definitions', 'create-when-needed'],
   },
   {
@@ -77,6 +77,16 @@ test('keeps only real chapters in the reader navigation', () => {
   assert.match(source, /querySelectorAll\('\[data-chapter\]:not\(\[hidden\]\)'\)/);
   assert.match(source, /<section class="chapter" id="cross-product-reuse" data-chapter hidden aria-hidden="true">/);
   assert.match(source, /<section class="chapter" id="validation" data-chapter hidden aria-hidden="true">/);
+});
+
+test('separates collaboration from the design solutions goals', () => {
+  const collaborationStart = source.indexOf('id="collaboration"');
+  const cohesionStart = source.indexOf('id="project-flexibility"');
+  const dividerStart = source.indexOf('id="design-solutions-title"');
+
+  assert.ok(dividerStart > collaborationStart && dividerStart < cohesionStart);
+  assert.match(source, /<header class="section-divider" aria-labelledby="design-solutions-title">/);
+  assert.match(source, /<h2 class="type-section" id="design-solutions-title">Design solutions<\/h2>/);
 });
 
 test('preserves the approved opening and collaboration copy', () => {

@@ -162,6 +162,15 @@
     .chapter { scroll-margin-top: calc(var(--bar-h) + 24px); }
     main > .chapter + .chapter { position: relative; }
     main > .chapter + .chapter::before { content: ""; position: absolute; z-index: 20; top: 0; right: 0; left: 0; height: 1px; background: var(--hairline); pointer-events: none; }
+    .section-divider {
+      min-height: clamp(210px, 23vw, 340px);
+      padding: clamp(64px, 8vw, 112px) var(--section-gutter);
+      display: grid;
+      align-items: center;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      background: var(--surface-chrome);
+    }
     h2, h3, h4, p { margin: 0; }
 
     .type-display {
@@ -614,6 +623,7 @@
       .hero { padding-left: 24px; padding-right: 24px; }
       .hero-visual { min-height: 410px; }
       .chapter-opener { min-height: 0; padding: 76px 24px; }
+      .section-divider { min-height: 170px; padding: 54px 24px; }
       .chapter-title { max-width: 19ch; }
       .chapter-summary { max-width: 19ch; }
       .goal-decision-overview { grid-auto-columns: minmax(78vw, 1fr); margin-top: 42px; }
@@ -892,6 +902,10 @@
         </div>
       </section>
 
+      <header class="section-divider" aria-labelledby="design-solutions-title">
+        <h2 class="type-section" id="design-solutions-title">Design solutions</h2>
+      </header>
+
       <section class="chapter" id="project-flexibility" data-chapter>
         <div class="goal-frame" data-goal-dive data-expanded="false">
         <div class="goal-scroll-range" aria-hidden="true"></div>
@@ -968,7 +982,7 @@
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">04 / Reuse</div>
-            <h2 class="chapter-title type-section">Making reuse the default</h2>
+            <h2 class="chapter-title type-section">Data standardization</h2>
           </div>
           <p class="chapter-summary type-summary">Project teams need custom data, but each duplicate definition makes reporting and standardization harder across the account.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that made reuse the default">
