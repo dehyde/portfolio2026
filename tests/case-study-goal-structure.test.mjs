@@ -90,8 +90,9 @@ test('separates collaboration from the design solutions goals', () => {
 });
 
 test('groups design goals and labels data standardization in the reader navigation', () => {
-  assert.match(source, /<span class="rail-group-label type-label">Design solutions<\/span>\s*<a href="#project-flexibility">Cohesion<\/a>/);
+  assert.match(source, /<span class="rail-group-label">Design solutions<\/span>\s*<a href="#project-flexibility">Cohesion<\/a>/);
   assert.match(source, /<a href="#reuse-before-creation">Data standardization<\/a>/);
+  assert.match(source, /\.rail-group-label \{[\s\S]*?color: var\(--text-muted\);[\s\S]*?text-transform: uppercase;/);
 });
 
 test('preserves the approved opening and collaboration copy', () => {

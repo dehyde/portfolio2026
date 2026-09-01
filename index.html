@@ -156,7 +156,14 @@
     .nested-rail .number { font-variant-numeric: tabular-nums; }
     .nested-rail.goal-nested { display: none; }
     .nested-rail.goal-nested.expanded { display: grid; }
-    .rail-group-label { margin: 14px 0 4px; }
+    .rail-group-label {
+      margin: 14px 0 4px;
+      color: var(--text-muted);
+      font: 540 11px/1.35 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
     .rail-foot { margin-top: auto; }
 
     main { width: min(100%, 1880px); min-width: 0; margin-inline: auto; }
@@ -699,7 +706,7 @@
           <li><a href="#working-overlap"><span class="number">03</span><span>Working overlap</span></a></li>
           <li><a href="#logic-prototypes"><span class="number">04</span><span>Logic prototypes</span></a></li>
         </ul>
-        <span class="rail-group-label type-label">Design solutions</span>
+        <span class="rail-group-label">Design solutions</span>
         <a href="#project-flexibility">Cohesion</a>
         <ul class="nested-rail goal-nested" aria-label="Cross-product cohesion decisions">
           <li><a href="#use-aec-data-components"><span class="number">01</span><span>AEC Data components</span></a></li>
