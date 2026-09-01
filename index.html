@@ -82,6 +82,33 @@
     }
     .topbar-back { flex: 0 0 auto; color: var(--text-secondary); }
     .case-name { min-width: 0; overflow: hidden; font-weight: 560; text-overflow: ellipsis; white-space: nowrap; }
+    .copy-edit-panel {
+      position: fixed;
+      right: clamp(16px, 2vw, 28px);
+      bottom: clamp(16px, 2vw, 28px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border: 1px solid var(--hairline);
+      background: color-mix(in srgb, var(--surface-chrome) 94%, transparent);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .22);
+      backdrop-filter: blur(12px);
+    }
+    .copy-edit-panel button { min-height: 34px; padding: 0 11px; color: var(--text-secondary); background: transparent; cursor: pointer; }
+    .copy-edit-panel button:hover { color: var(--text-primary); }
+    .copy-edit-panel .copy-edit-toggle { color: var(--text-primary); background: var(--surface-interactive); }
+    .copy-edit-actions, .copy-edit-status { display: none; }
+    .copy-edit-panel[data-editing="true"] { gap: 6px; }
+    .copy-edit-panel[data-editing="true"] .copy-edit-actions { display: flex; align-items: center; gap: 2px; }
+    .copy-edit-panel[data-editing="true"] .copy-edit-status { display: block; max-width: 20ch; padding: 0 7px; color: var(--text-muted); }
+    html[data-copy-editing="true"] [data-copy-editable] {
+      outline: 1px dashed color-mix(in srgb, var(--accent) 68%, transparent);
+      outline-offset: 5px;
+      cursor: text;
+    }
+    html[data-copy-editing="true"] [data-copy-editable]:focus { outline-style: solid; background: color-mix(in srgb, var(--accent) 9%, transparent); }
 
     .case-shell { display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); }
     .rail {
@@ -571,6 +598,9 @@
       .topbar-back { font-size: 0; }
       .topbar-back::before { content: "←"; font-size: 16px; }
       .case-name { font-size: 13px; }
+      .copy-edit-panel { right: 12px; bottom: 12px; max-width: calc(100vw - 24px); flex-wrap: wrap; }
+      .copy-edit-panel[data-editing="true"] { justify-content: flex-end; }
+      .copy-edit-panel[data-editing="true"] .copy-edit-status { width: 100%; max-width: none; padding: 3px 7px 1px; text-align: right; }
       .case-shell { display: block; }
       .rail { top: var(--bar-h); width: 100%; height: auto; min-height: 62px; padding: 13px 18px; flex-direction: row; align-items: center; gap: 18px; overflow-x: auto; overflow-y: hidden; border-right: 0; border-bottom: 1px solid var(--hairline); }
       .progress, .rail-foot { display: none; }
@@ -629,6 +659,15 @@
     <a class="topbar-back" href="#opening">← Selected work</a>
     <span class="case-name">Custom data management across account and project levels</span>
   </nav>
+  <div class="copy-edit-panel type-interface" data-copy-edit-panel data-editing="false">
+    <span class="copy-edit-status" data-copy-edit-status aria-live="polite"></span>
+    <div class="copy-edit-actions">
+      <button type="button" data-copy-edit-copy>Copy changes</button>
+      <button type="button" data-copy-edit-download>Download</button>
+      <button type="button" data-copy-edit-discard>Discard</button>
+    </div>
+    <button class="copy-edit-toggle" type="button" data-copy-edit-toggle aria-pressed="false">Edit text</button>
+  </div>
 
   <div class="case-shell" data-case>
     <aside class="rail" aria-label="Case-study index">
@@ -1226,6 +1265,7 @@
       import { selectActiveChapter, selectActiveSubsection } from './js/case-study-nav-state.js';
       import { createOneShotScrollAnnotations } from './js/case-study-rough-annotation-state.js';
       import { createTrackpadScrollController, getRevealProgress, getSnapTarget, isHorizontalIntent, runSettleTransition } from './js/case-study-sidecar-state.js?v=animated-native-settle';
+      import { buildCopyKey, collectCopyChanges, serializeCopyChanges } from './js/case-study-copy-edit-state.js';
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealObserver = new IntersectionObserver((entries) => {
@@ -1724,6 +1764,144 @@
         window.setTimeout(revealTarget, reduceMotion ? 0 : 540);
       });
     });
+
+    const copyDraftStorageKey = 'tom-bar-gal.case-study-copy-draft.v1';
+    const copyEditPanel = document.querySelector('[data-copy-edit-panel]');
+    const copyEditToggle = copyEditPanel.querySelector('[data-copy-edit-toggle]');
+    const copyEditStatus = copyEditPanel.querySelector('[data-copy-edit-status]');
+    const copyEditCopy = copyEditPanel.querySelector('[data-copy-edit-copy]');
+    const copyEditDownload = copyEditPanel.querySelector('[data-copy-edit-download]');
+    const copyEditDiscard = copyEditPanel.querySelector('[data-copy-edit-discard]');
+    const editableSelector = [
+      '.type-display',
+      '.type-section',
+      '.type-summary',
+      '.type-subsection',
+      '.type-proposition',
+      '.type-body-reading',
+      '.type-body-support',
+      '.type-caption',
+      '.editorial-aside',
+      '.editorial-pull',
+      '.type-label',
+    ].join(', ');
+    const editableElements = [...document.querySelectorAll(`main ${editableSelector}`)].filter((element) => (
+      !element.closest('[hidden], button, a') && !element.querySelector('[data-rough-annotation]')
+    ));
+    const copyRecords = editableElements.map((element, index) => {
+      const sectionId = element.closest('[id]')?.id || 'case-study';
+      const original = element.textContent.trim();
+      const key = buildCopyKey({ sectionId, index });
+      element.dataset.copyEditable = key;
+      return { element, key, original, value: original };
+    });
+    let copyEditing = false;
+
+    const getCopyChanges = () => collectCopyChanges(copyRecords.map(({ key, original, value }) => ({ key, original, value })));
+    const setCopyEditStatus = (message) => { copyEditStatus.textContent = message; };
+    const updateCopyEditStatus = () => {
+      const changes = getCopyChanges();
+      setCopyEditStatus(changes.length ? `${changes.length} change${changes.length === 1 ? '' : 's'} saved locally` : 'No draft changes');
+    };
+    const loadCopyDraft = () => {
+      try {
+        const stored = window.localStorage.getItem(copyDraftStorageKey);
+        if (!stored) return;
+        const draft = JSON.parse(stored);
+        copyRecords.forEach((record) => {
+          const saved = draft[record.key];
+          if (!saved || saved.original !== record.original || typeof saved.value !== 'string') return;
+          record.value = saved.value;
+          record.element.textContent = saved.value;
+        });
+      } catch {
+        setCopyEditStatus('Draft storage is unavailable in this browser');
+      }
+    };
+    const saveCopyDraft = () => {
+      const changes = getCopyChanges();
+      try {
+        if (!changes.length) {
+          window.localStorage.removeItem(copyDraftStorageKey);
+        } else {
+          const draft = Object.fromEntries(changes.map(({ key, original, value }) => [key, { original, value }]));
+          window.localStorage.setItem(copyDraftStorageKey, JSON.stringify(draft));
+        }
+        updateCopyEditStatus();
+      } catch {
+        setCopyEditStatus('Changes are visible, but could not be saved locally');
+      }
+    };
+    const setCopyEditing = (nextState) => {
+      copyEditing = nextState;
+      document.documentElement.dataset.copyEditing = String(nextState);
+      copyEditPanel.dataset.editing = String(nextState);
+      copyEditToggle.setAttribute('aria-pressed', String(nextState));
+      copyEditToggle.textContent = nextState ? 'Done editing' : 'Edit text';
+      copyRecords.forEach(({ element }) => {
+        if (nextState) element.setAttribute('contenteditable', 'plaintext-only');
+        else element.removeAttribute('contenteditable');
+      });
+      if (nextState) updateCopyEditStatus();
+    };
+    const copyChanges = async () => {
+      const changes = getCopyChanges();
+      if (!changes.length) {
+        setCopyEditStatus('Make an edit before copying changes');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(serializeCopyChanges(changes));
+        setCopyEditStatus(`${changes.length} change${changes.length === 1 ? '' : 's'} copied`);
+      } catch {
+        setCopyEditStatus('Could not copy changes. Use Download instead.');
+      }
+    };
+    const downloadChanges = () => {
+      const changes = getCopyChanges();
+      if (!changes.length) {
+        setCopyEditStatus('Make an edit before downloading changes');
+        return;
+      }
+      const file = new Blob([serializeCopyChanges(changes)], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'case-study-copy-draft.txt';
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      setCopyEditStatus('Draft downloaded');
+    };
+    const discardChanges = () => {
+      if (!getCopyChanges().length) return;
+      if (!window.confirm('Discard all local copy changes?')) return;
+      copyRecords.forEach((record) => {
+        record.value = record.original;
+        record.element.textContent = record.original;
+      });
+      try {
+        window.localStorage.removeItem(copyDraftStorageKey);
+        updateCopyEditStatus();
+      } catch {
+        setCopyEditStatus('Changes were reset, but local draft storage could not be cleared');
+      }
+    };
+    loadCopyDraft();
+    copyRecords.forEach((record) => {
+      record.element.addEventListener('input', () => {
+        record.value = record.element.textContent.trim();
+        saveCopyDraft();
+      });
+      record.element.addEventListener('paste', (event) => {
+        event.preventDefault();
+        const pastedText = event.clipboardData?.getData('text/plain') || '';
+        document.execCommand('insertText', false, pastedText);
+      });
+    });
+    copyEditToggle.addEventListener('click', () => setCopyEditing(!copyEditing));
+    copyEditCopy.addEventListener('click', copyChanges);
+    copyEditDownload.addEventListener('click', downloadChanges);
+    copyEditDiscard.addEventListener('click', discardChanges);
 
     updateChapterState();
     updateProgress();
