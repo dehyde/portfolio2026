@@ -20,7 +20,7 @@ const goals = [
   },
   {
     chapterId: 'reuse-before-creation',
-    title: 'Making reuse the default',
+    title: 'Optimizing for data standardization',
     decisionIds: ['find-existing-definitions', 'create-when-needed'],
   },
   {
