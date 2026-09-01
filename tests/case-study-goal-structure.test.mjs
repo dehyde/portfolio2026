@@ -20,7 +20,7 @@ const goals = [
   },
   {
     chapterId: 'reuse-before-creation',
-    title: 'Data standardization',
+    title: 'Making reuse the default',
     decisionIds: ['find-existing-definitions', 'create-when-needed'],
   },
   {
@@ -87,6 +87,11 @@ test('separates collaboration from the design solutions goals', () => {
   assert.ok(dividerStart > collaborationStart && dividerStart < cohesionStart);
   assert.match(source, /<header class="section-divider" aria-labelledby="design-solutions-title">/);
   assert.match(source, /<h2 class="type-section" id="design-solutions-title">Design solutions<\/h2>/);
+});
+
+test('groups design goals and labels data standardization in the reader navigation', () => {
+  assert.match(source, /<span class="rail-group-label type-label">Design solutions<\/span>\s*<a href="#project-flexibility">Cohesion<\/a>/);
+  assert.match(source, /<a href="#reuse-before-creation">Data standardization<\/a>/);
 });
 
 test('preserves the approved opening and collaboration copy', () => {

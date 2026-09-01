@@ -156,6 +156,7 @@
     .nested-rail .number { font-variant-numeric: tabular-nums; }
     .nested-rail.goal-nested { display: none; }
     .nested-rail.goal-nested.expanded { display: grid; }
+    .rail-group-label { margin: 14px 0 4px; }
     .rail-foot { margin-top: auto; }
 
     main { width: min(100%, 1880px); min-width: 0; margin-inline: auto; }
@@ -616,6 +617,7 @@
       .rail-main { display: flex; width: max-content; gap: 6px; align-items: center; }
       .rail-main > a, .rail-main > a.active { max-width: none; white-space: nowrap; padding: 8px 10px; font: 480 13px/1.25 var(--font-system); font-variation-settings: var(--font-system-formal); letter-spacing: 0; }
       .rail-main > a::before { display: none; }
+      .rail-group-label { margin: 0 4px 0 10px; padding: 8px 0; white-space: nowrap; }
       .nested-rail { margin: 0 6px 0 0; padding: 0; display: flex; gap: 4px; }
       .nested-rail.goal-nested { display: none; }
       .nested-rail.goal-nested.expanded { display: flex; }
@@ -697,6 +699,7 @@
           <li><a href="#working-overlap"><span class="number">03</span><span>Working overlap</span></a></li>
           <li><a href="#logic-prototypes"><span class="number">04</span><span>Logic prototypes</span></a></li>
         </ul>
+        <span class="rail-group-label type-label">Design solutions</span>
         <a href="#project-flexibility">Cohesion</a>
         <ul class="nested-rail goal-nested" aria-label="Cross-product cohesion decisions">
           <li><a href="#use-aec-data-components"><span class="number">01</span><span>AEC Data components</span></a></li>
@@ -704,7 +707,7 @@
           <li><a href="#maintain-construction-patterns"><span class="number">03</span><span>Construction Cloud patterns</span></a></li>
           <li><a href="#keep-module-controls"><span class="number">04</span><span>Module controls</span></a></li>
         </ul>
-        <a href="#reuse-before-creation">Reuse</a>
+        <a href="#reuse-before-creation">Data standardization</a>
         <ul class="nested-rail goal-nested" aria-label="Reuse decisions">
           <li><a href="#find-existing-definitions"><span class="number">01</span><span>Find existing</span></a></li>
           <li><a href="#create-when-needed"><span class="number">02</span><span>Create when needed</span></a></li>
@@ -982,7 +985,7 @@
         <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">04 / Reuse</div>
-            <h2 class="chapter-title type-section">Data standardization</h2>
+            <h2 class="chapter-title type-section">Making reuse the default</h2>
           </div>
           <p class="chapter-summary type-summary">Project teams need custom data, but each duplicate definition makes reporting and standardization harder across the account.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that made reuse the default">
