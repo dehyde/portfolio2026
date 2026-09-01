@@ -92,6 +92,7 @@
       padding: 26px 20px 24px clamp(18px, 2.6vw, 38px);
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
       border-right: 1px solid var(--hairline);
       background: var(--surface-chrome);
       font-family: var(--font-system);
@@ -231,6 +232,32 @@
     .chapter-heading .type-label { margin-bottom: 16px; }
     .chapter-title { max-width: 10ch; }
     .chapter-summary { max-width: 29ch; margin-top: clamp(34px, 5vw, 72px); }
+    .goal-decision-overview {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(248px, 1fr);
+      gap: clamp(12px, 1.7vw, 24px);
+      margin: clamp(48px, 7vw, 92px) 0 0;
+      padding: 0 0 4px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline proximity;
+      list-style: none;
+    }
+    .goal-decision-card {
+      min-height: 178px;
+      padding: 22px;
+      border: 1px solid var(--hairline);
+      background: var(--surface-interactive);
+      scroll-snap-align: start;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+    .goal-decision-card a { height: 100%; display: grid; color: inherit; }
+    .goal-decision-card .type-label { color: var(--accent); }
+    .goal-decision-card .type-detail { align-self: end; margin-top: 20px; }
+    .goal-decision-card:hover { border-color: var(--accent); background: color-mix(in srgb, var(--surface-interactive) 90%, var(--accent)); transform: translateY(-2px); }
+    .goal-decision-card a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .goal-decision { scroll-margin-top: calc(var(--bar-h) + 24px); }
     .chapter-evidence { padding: 0 var(--section-gutter) clamp(100px, 13vw, 190px); background: var(--surface-canvas); }
     .chapter-evidence > * { max-width: 650px; margin-left: min(24vw, 360px); }
     .chapter-evidence .type-caption { margin-top: 22px; }
@@ -265,6 +292,9 @@
     .subsection-evidence { min-width: 0; }
     .subsection-evidence .type-body-reading + .type-body-reading { margin-top: 1.2em; }
     .subsection-evidence .pull { margin: 68px 0 0; max-width: 18ch; color: var(--accent); }
+    .case-figure { max-width: 880px; margin: clamp(38px, 5vw, 70px) 0 0; }
+    .case-figure img { width: 100%; max-height: min(58vw, 620px); object-fit: contain; background: var(--surface-interactive); }
+    .case-figure figcaption { max-width: 60em; margin-top: 14px; }
     .persona-groups { display: grid; gap: clamp(58px, 8vw, 112px); }
     .persona-group { padding-top: clamp(20px, 2.4vw, 34px); border-top: 1px solid var(--hairline); }
     .persona-group-heading { width: min(100%, 54rem); margin-bottom: clamp(24px, 3vw, 42px); }
@@ -466,7 +496,7 @@
       .topbar-back::before { content: "←"; font-size: 16px; }
       .case-name { font-size: 13px; }
       .case-shell { display: block; }
-      .rail { top: var(--bar-h); width: 100%; height: auto; min-height: 62px; padding: 13px 18px; flex-direction: row; align-items: center; gap: 18px; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--hairline); }
+      .rail { top: var(--bar-h); width: 100%; height: auto; min-height: 62px; padding: 13px 18px; flex-direction: row; align-items: center; gap: 18px; overflow-x: auto; overflow-y: hidden; border-right: 0; border-bottom: 1px solid var(--hairline); }
       .progress, .rail-foot { display: none; }
       .rail-main { display: flex; width: max-content; gap: 6px; align-items: center; }
       .rail-main > a, .rail-main > a.active { max-width: none; white-space: nowrap; padding: 8px 10px; font: 480 13px/1.25 var(--font-system); font-variation-settings: var(--font-system-formal); letter-spacing: 0; }
@@ -477,6 +507,8 @@
       .hero-visual { min-height: 410px; }
       .chapter-opener { min-height: 0; padding: 76px 24px; }
       .chapter-summary { max-width: 19ch; }
+      .goal-decision-overview { grid-auto-columns: minmax(78vw, 1fr); margin-top: 42px; }
+      .goal-decision-card { min-height: 154px; padding: 18px; }
       .chapter-evidence { padding: 0 24px 76px; }
       .chapter-evidence > * { margin-left: 0; }
       .subsection-grid { padding: 68px 24px; grid-template-columns: 1fr; row-gap: 26px; }
@@ -527,19 +559,40 @@
           <li><a href="#personas"><span class="number">02</span><span>Personas</span></a></li>
           <li><a href="#problem-definition"><span class="number">03</span><span>Problem definition</span></a></li>
         </ul>
-        <a href="#decision">Decision</a>
-        <ul class="nested-rail" aria-label="Decision subsections">
-          <li><a href="#shared-infrastructure"><span class="number">01</span><span>Shared infrastructure</span></a></li>
-          <li><a href="#translation"><span class="number">02</span><span>Translation</span></a></li>
-          <li><a href="#reuse"><span class="number">03</span><span>Reuse</span></a></li>
+        <a href="#collaboration">Collaboration</a>
+        <ul class="nested-rail" aria-label="Collaboration decisions">
+          <li><a href="#shared-brief"><span class="number">01</span><span>Shared goals</span></a></li>
+          <li><a href="#joint-research"><span class="number">02</span><span>Joint research</span></a></li>
+          <li><a href="#working-overlap"><span class="number">03</span><span>Working overlap</span></a></li>
+          <li><a href="#logic-prototypes"><span class="number">04</span><span>Logic prototypes</span></a></li>
         </ul>
-        <a href="#governance">Governance</a>
-        <ul class="nested-rail" data-governance-rail aria-label="Governance deep dive">
-          <li><button type="button" data-dive-target="constraint"><span class="number">01</span><span>Constraint</span></button></li>
-          <li><button type="button" data-dive-target="model"><span class="number">02</span><span>Model</span></button></li>
-          <li><button type="button" data-dive-target="tradeoff"><span class="number">03</span><span>Trade-off</span></button></li>
+        <a href="#project-flexibility">Flexible data</a>
+        <ul class="nested-rail" aria-label="Flexible data decisions">
+          <li><a href="#custom-data-in-submittals"><span class="number">01</span><span>Custom data</span></a></li>
+          <li><a href="#module-specific-controls"><span class="number">02</span><span>Module controls</span></a></li>
         </ul>
-        <a href="#learning">Learning</a>
+        <a href="#reuse-before-creation">Reuse</a>
+        <ul class="nested-rail" aria-label="Reuse decisions">
+          <li><a href="#find-existing-definitions"><span class="number">01</span><span>Find existing</span></a></li>
+          <li><a href="#create-when-needed"><span class="number">02</span><span>Create when needed</span></a></li>
+        </ul>
+        <a href="#standards-governance">Governance</a>
+        <ul class="nested-rail" aria-label="Governance decisions">
+          <li><a href="#separate-governance-scope"><span class="number">01</span><span>Separate scope</span></a></li>
+          <li><a href="#preserve-applied-values"><span class="number">02</span><span>Preserve values</span></a></li>
+          <li><a href="#make-changes-visible"><span class="number">03</span><span>Show consequences</span></a></li>
+        </ul>
+        <a href="#cross-product-reuse">Cross-product model</a>
+        <ul class="nested-rail" aria-label="Cross-product model decisions">
+          <li><a href="#reuse-platform-logic"><span class="number">01</span><span>Shared logic</span></a></li>
+          <li><a href="#translate-cad-interactions"><span class="number">02</span><span>Translate interactions</span></a></li>
+          <li><a href="#extend-construction-cloud-patterns"><span class="number">03</span><span>Reusable patterns</span></a></li>
+        </ul>
+        <a href="#validation">Validation</a>
+        <ul class="nested-rail" aria-label="Validation and open questions">
+          <li><a href="#testing-signal"><span class="number">01</span><span>Testing</span></a></li>
+          <li><a href="#open-questions"><span class="number">02</span><span>Open questions</span></a></li>
+        </ul>
       </nav>
       <div class="rail-foot type-caption">Condensed case study<br />Optional depth included</div>
     </aside>
@@ -661,7 +714,192 @@
         </section>
       </section>
 
-      <section class="chapter decision-chapter" id="decision" data-chapter>
+      <section class="chapter" id="collaboration" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">02 / Delivery</div>
+            <h2 class="chapter-title type-section">Establish a shared way of working</h2>
+          </div>
+          <p class="chapter-summary type-summary">Construction Cloud and AEC Data came from separate Autodesk organizations, worked with different personas, and needed a shared basis for decisions about the same data model.</p>
+          <ol class="goal-decision-overview" aria-label="Decisions that established a shared way of working">
+            <li class="goal-decision-card"><a href="#shared-brief"><span class="type-label">01</span><strong class="type-detail">Made the goals explicit.</strong></a></li>
+            <li class="goal-decision-card"><a href="#joint-research"><span class="type-label">02</span><strong class="type-detail">Built shared understanding together.</strong></a></li>
+            <li class="goal-decision-card"><a href="#working-overlap"><span class="type-label">03</span><strong class="type-detail">Created time for dependent decisions.</strong></a></li>
+            <li class="goal-decision-card"><a href="#logic-prototypes"><span class="type-label">04</span><strong class="type-detail">Tested complex logic in working prototypes.</strong></a></li>
+          </ol>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="shared-brief" aria-labelledby="shared-brief-title">
+          <h3 class="subsection-title type-subsection" id="shared-brief-title">Made the goals explicit</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">The project combined Construction Cloud’s need for project-level custom data with AEC Data’s responsibility for reusable definitions and account-level governance.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The two teams had different products, priorities, and persona responsibilities. Naming data flexibility, reuse, and governance as shared project concerns made those differences part of the design work rather than later integration issues.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="joint-research" aria-labelledby="joint-research-title">
+          <h3 class="subsection-title type-subsection" id="joint-research-title">Built shared understanding together</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Joint interviews and usability testing connected account-level data management with the work of construction project teams.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Research made the same framework visible through four distinct roles: project managers and project engineers in active construction work, and architects and VDC/BIM managers defining and governing standards.</p>
+              <figure class="case-figure">
+                <img src="assets/case-study/whiteboard.png" alt="Workshop whiteboard mapping the custom data workflow and governance questions" />
+                <figcaption class="type-caption">A shared working model gave both teams a reference for discussing custom data, ownership, and workflow differences.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="working-overlap" aria-labelledby="working-overlap-title">
+          <h3 class="subsection-title type-subsection" id="working-overlap-title">Created time for dependent decisions</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Boston and Tel Aviv had limited working-hour overlap and different working weeks, so the teams reserved live sessions for decisions that could not wait for a handoff.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Planned overlap sessions reduced delays when a decision needed input from both the Construction Cloud workflow team and the platform custom-data team.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="logic-prototypes" aria-labelledby="logic-prototypes-title">
+          <h3 class="subsection-title type-subsection" id="logic-prototypes-title">Tested complex logic in working prototypes</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Account, project, and module rules involved multiple personas and edge cases, so static flows were not enough to evaluate the decisions.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Working prototypes made the business logic concrete. Feedback sessions with customer-success managers who understood both account and project personas helped the teams examine hierarchy questions before they became interface behavior.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter" id="project-flexibility" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">03 / Goal 1</div>
+            <h2 class="chapter-title type-section">Enable flexible custom data in project workflows</h2>
+          </div>
+          <p class="chapter-summary type-summary">Project engineers needed information in Submittals that the predefined property set did not capture, without making every project-specific field a platform standard.</p>
+          <ol class="goal-decision-overview" aria-label="Decisions that enabled flexible project data">
+            <li class="goal-decision-card"><a href="#custom-data-in-submittals"><span class="type-label">01</span><strong class="type-detail">Enabled custom data in Submittals.</strong></a></li>
+            <li class="goal-decision-card"><a href="#module-specific-controls"><span class="type-label">02</span><strong class="type-detail">Kept workflow controls with each module.</strong></a></li>
+          </ol>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="custom-data-in-submittals" aria-labelledby="custom-data-in-submittals-title">
+          <h3 class="subsection-title type-subsection" id="custom-data-in-submittals-title">Enabled custom data in Submittals</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Construction project engineers could add information when a Submittal needed more than the module’s predefined properties.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Custom data supports the information that project teams need to capture, sort, filter, export, and report on as a project develops. The capability appears inside the Submittals workflow rather than as a separate data-management task.</p>
+              <figure class="case-figure">
+                <img src="assets/case-study/hero-ui.png" alt="Construction Cloud interfaces for creating parameters and adding custom fields" />
+                <figcaption class="type-caption">Custom data is introduced from the project workflow where the missing information becomes apparent.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="module-specific-controls" aria-labelledby="module-specific-controls-title">
+          <h3 class="subsection-title type-subsection" id="module-specific-controls-title">Kept workflow controls with each module</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Shared data definitions did not remove the controls each module needs for its own workflow.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">A field can be required, optional, pre-populated, or organized by category for different reasons in different modules. The shared definition model carries common data, while each Construction Cloud workflow keeps the controls that determine how its users work with that data.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter" id="reuse-before-creation" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">04 / Goal 2</div>
+            <h2 class="chapter-title type-section">Make reuse easier than duplicate creation</h2>
+          </div>
+          <p class="chapter-summary type-summary">Account-level standards reduce duplication only when project users can find and choose them inside the workflow where they need a field.</p>
+          <ol class="goal-decision-overview" aria-label="Decisions that made data definition reuse easier">
+            <li class="goal-decision-card"><a href="#find-existing-definitions"><span class="type-label">01</span><strong class="type-detail">Showed existing definitions before creation.</strong></a></li>
+            <li class="goal-decision-card"><a href="#create-when-needed"><span class="type-label">02</span><strong class="type-detail">Kept creation available when reuse did not fit.</strong></a></li>
+          </ol>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="find-existing-definitions" aria-labelledby="find-existing-definitions-title">
+          <h3 class="subsection-title type-subsection" id="find-existing-definitions-title">Showed existing definitions before creation</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">The workflow starts with available definitions and search, so a project user can reuse a standard before adding another version of it.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The previous custom-data flow did not make existing definitions part of the first decision. Selection before creation makes the reusable option visible at the point where project teams define their data.</p>
+              <figure class="case-figure">
+                <img src="assets/case-study/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" />
+                <figcaption class="type-caption">Existing definitions appear before the project-specific creation path, making reuse the normal first action.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="create-when-needed" aria-labelledby="create-when-needed-title">
+          <h3 class="subsection-title type-subsection" id="create-when-needed-title">Kept creation available when reuse did not fit</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">A project-specific definition remains available when no existing definition describes the information a project needs.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Standardization is useful only when it represents the work accurately. The selection flow supports reuse first, without blocking a project team from creating data for a requirement that does not yet exist in the shared set.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter" id="standards-governance" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">05 / Goal 3</div>
+            <h2 class="chapter-title type-section">Govern standards without making projects brittle</h2>
+          </div>
+          <p class="chapter-summary type-summary">Account managers need reusable, consistent definitions across projects, while project teams need data that remains stable after an account-level change.</p>
+          <ol class="goal-decision-overview" aria-label="Decisions that governed standards across account and project levels">
+            <li class="goal-decision-card"><a href="#separate-governance-scope"><span class="type-label">01</span><strong class="type-detail">Separated account standards from project definitions.</strong></a></li>
+            <li class="goal-decision-card"><a href="#preserve-applied-values"><span class="type-label">02</span><strong class="type-detail">Preserved applied values when lists changed.</strong></a></li>
+            <li class="goal-decision-card"><a href="#make-changes-visible"><span class="type-label">03</span><strong class="type-detail">Made ownership and consequences visible.</strong></a></li>
+          </ol>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="separate-governance-scope" aria-labelledby="separate-governance-scope-title">
+          <h3 class="subsection-title type-subsection" id="separate-governance-scope-title">Separated account standards from project definitions</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Account-level definitions provide standards across projects; project-specific definitions give a project owner a place for local data.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The model distinguishes a reusable account definition from a project definition created for local work. This gives account managers a clear governance layer without treating every project requirement as an organization-wide standard.</p>
+              <figure class="case-figure">
+                <img src="assets/case-study/governance.png" alt="Account and project governance model for custom data definitions" />
+                <figcaption class="type-caption">The governance model separates ownership and scope before a team decides where a definition belongs.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="preserve-applied-values" aria-labelledby="preserve-applied-values-title">
+          <h3 class="subsection-title type-subsection" id="preserve-applied-values-title">Preserved applied values when shared lists changed</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">An account-level list can evolve without removing information already applied to an active project record.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Project records may already use a list value when an account manager changes or removes that value from a shared definition. The system needed to retain the applied project value, rather than quietly rewriting completed or active project work.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="make-changes-visible" aria-labelledby="make-changes-visible-title">
+          <h3 class="subsection-title type-subsection" id="make-changes-visible-title">Made ownership and consequences visible</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">A consequential change needs to show whether it is account-owned, project-owned, and already used by a project.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Visual treatment for changed or removed values is part of the governance model. It helps the people editing standards understand which values remain in use and which changes affect future selection rather than existing project data.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter decision-chapter" id="decision" data-chapter hidden aria-hidden="true">
         <header class="chapter-opener reveal">
           <div class="chapter-heading">
             <div class="type-label">02 / System design</div>
@@ -695,21 +933,21 @@
         </div>
       </section>
 
-      <section class="chapter deep-dive" id="governance" data-chapter>
+      <section class="chapter deep-dive" id="governance" aria-label="Optional governance depth">
         <div class="dive-frame" data-deep-dive data-state="closed" data-expanded="false">
           <div class="dive-scroll-range" aria-hidden="true"></div>
           <header class="dive-summary">
             <div class="dive-summary-heading">
-              <div class="type-label">03 / Optional depth</div>
-              <h2 class="chapter-title type-section">Governance</h2>
+              <div class="type-label">Optional depth / Governance</div>
+              <h2 class="chapter-title type-section">Account and project ownership</h2>
             </div>
             <div class="dive-summary-main">
-              <p class="chapter-summary type-summary">Shared standards could not quietly rewrite live project work.</p>
+              <p class="chapter-summary type-summary">A shared definition could not quietly rewrite data already applied to project records.</p>
               <div class="dive-actions">
                 <button class="open-dive type-interface" type="button" data-open-dive aria-expanded="false" aria-controls="governance-takeover">
                   <span>Read the decision</span><span class="arrow" aria-hidden="true">→</span>
                 </button>
-                <a class="skip-dive type-interface" href="#learning">Skip · Continue ↓</a>
+                <a class="skip-dive type-interface" href="#cross-product-reuse">Skip · Continue ↓</a>
               </div>
               <div class="dive-gesture-cue type-caption" aria-hidden="true"><span>Swipe left to open · right to return</span><span>↔</span></div>
             </div>
@@ -721,29 +959,29 @@
             </div>
             <section class="dive-chapter" id="dive-constraint" data-dive-chapter="constraint">
               <div class="type-label">Part A · Governance</div>
-              <h3 class="type-proposition">Shared did not mean universally editable.</h3>
-              <p class="type-body-reading">A single repository looked elegant from the platform’s perspective. From a project’s perspective, it meant a standard could change after teams had already organized work around it.</p>
+              <h3 class="type-proposition">A shared definition must not rewrite a project record.</h3>
+              <p class="type-body-reading">A project team may already use a value when an account manager changes the shared list that introduced it. The model needed to preserve that applied project data.</p>
               <figure class="dive-figure">
                 <img src="assets/case-study/whiteboard.png" alt="Workshop whiteboard used to map governance constraints" />
-                <figcaption class="type-caption">The untidy part: agreeing which changes should propagate, and which should remain local.</figcaption>
+                <figcaption class="type-caption">The governance question: which changes affect future selection, and which values must remain with the project.</figcaption>
               </figure>
             </section>
             <section class="dive-chapter" id="dive-model" data-dive-chapter="model">
               <div class="type-label">Part B · Governance</div>
-              <h3 class="type-proposition">Separate standards from project definitions.</h3>
-              <p class="type-body-reading">Account-level standards remained reusable and governed. Project-specific definitions lived in a distinct partition, protecting live work while preserving a clear path back to shared infrastructure.</p>
+              <h3 class="type-proposition">Separate account standards from project-specific definitions.</h3>
+              <p class="type-body-reading">Account-level standards remain reusable and governed. Project-specific definitions have their own scope, giving project owners local flexibility without turning every local need into a platform standard.</p>
               <figure class="dive-figure">
                 <img src="assets/case-study/governance.png" alt="Detailed governance model and project settings interface" />
-                <figcaption class="type-caption">The model makes ownership visible before the interface asks someone to make a consequential edit.</figcaption>
+                <figcaption class="type-caption">The model makes ownership visible before someone makes a consequential edit.</figcaption>
               </figure>
             </section>
             <section class="dive-chapter" id="dive-tradeoff" data-dive-chapter="tradeoff">
               <div class="type-label">Part C · Governance</div>
-              <h3 class="type-proposition">A little duplication bought a lot of safety.</h3>
-              <p class="type-body-reading">The architecture was less theoretically pure. It was also more legible to the people responsible for project outcomes—which was the point.</p>
+              <h3 class="type-proposition">Keep applied project data intact when account standards change.</h3>
+              <p class="type-body-reading">A shared list can evolve without removing a value already applied to a project record. The system distinguishes what is available next from what was used in existing project work.</p>
               <figure class="dive-figure">
                 <img src="assets/case-study/components-map.png" alt="Shared component architecture across account and project levels" />
-                <figcaption class="type-caption">The durable rule: standardize the relationship, not every instance.</figcaption>
+                <figcaption class="type-caption">The shared model defines the relationship between standards and project data without treating them as the same thing.</figcaption>
               </figure>
             </section>
             <div class="dive-end" data-dive-end>
@@ -754,7 +992,90 @@
         </div>
       </section>
 
-      <section class="chapter learning" id="learning" data-chapter>
+      <section class="chapter" id="cross-product-reuse" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">06 / Goal 4</div>
+            <h2 class="chapter-title type-section">Reuse the model while making it native to Construction Cloud</h2>
+          </div>
+          <p class="chapter-summary type-summary">AEC Data provided shared data logic and infrastructure; Construction Cloud needed an interaction model that matched its project workflow conventions.</p>
+          <ol class="goal-decision-overview" aria-label="Decisions that made the model reusable across products">
+            <li class="goal-decision-card"><a href="#reuse-platform-logic"><span class="type-label">01</span><strong class="type-detail">Reused shared data logic and infrastructure.</strong></a></li>
+            <li class="goal-decision-card"><a href="#translate-cad-interactions"><span class="type-label">02</span><strong class="type-detail">Translated CAD-oriented interactions.</strong></a></li>
+            <li class="goal-decision-card"><a href="#extend-construction-cloud-patterns"><span class="type-label">03</span><strong class="type-detail">Kept the pattern reusable across modules.</strong></a></li>
+          </ol>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="reuse-platform-logic" aria-labelledby="reuse-platform-logic-title">
+          <h3 class="subsection-title type-subsection" id="reuse-platform-logic-title">Reused shared data logic and infrastructure</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">AEC Data’s existing definition model provided a foundation for consistent custom data across the design-to-construction workflow.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The work did not create a separate definition model for Submittals. It used AEC Data’s shared logic and components as the base for a construction-management implementation.</p>
+              <figure class="case-figure">
+                <img src="assets/case-study/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" />
+                <figcaption class="type-caption">Shared infrastructure supports a consistent data-definition model across products without requiring identical interfaces.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="translate-cad-interactions" aria-labelledby="translate-cad-interactions-title">
+          <h3 class="subsection-title type-subsection" id="translate-cad-interactions-title">Translated CAD-oriented interactions</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">AEC Data components were designed for Revit and CAD workflows, while Construction Cloud users work through project modules, lists, modals, and side panels.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The essential fields and logic were retained, but their interaction patterns changed. Construction Cloud uses the navigation conventions its project personas already know instead of reproducing a CAD-oriented form wholesale.</p>
+              <figure class="case-figure">
+                <img src="assets/case-study/adaptation.png" alt="CAD-oriented data form reorganized as a Construction Cloud interaction" />
+                <figcaption class="type-caption">The same definition model is expressed through interaction patterns familiar to Construction Cloud users.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="extend-construction-cloud-patterns" aria-labelledby="extend-construction-cloud-patterns-title">
+          <h3 class="subsection-title type-subsection" id="extend-construction-cloud-patterns-title">Kept the pattern reusable across modules</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">The custom-data experience needed to work in Submittals and establish a model that other Construction Cloud modules could adopt.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Reusable does not mean every module receives the same screen. The shared model preserves common definition logic while allowing a module to place custom-data controls where they fit its own workflow.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter" id="validation" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">07 / Validation</div>
+            <h2 class="chapter-title type-section">Validation and unresolved decisions</h2>
+          </div>
+          <p class="chapter-summary type-summary">Joint research, working prototypes, and usability testing informed the model; several detailed interaction decisions remained open.</p>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="testing-signal" aria-labelledby="testing-signal-title">
+          <h3 class="subsection-title type-subsection" id="testing-signal-title">Tested the model with the people who use it</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Research and prototype reviews tested whether the account, project, and module rules could be understood across the personas involved.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The project used interviews, usability testing, prototype reviews, and customer-success feedback to keep the model grounded in how project teams and account managers handle data. The supplied material documents the methods, not a quantified usability result.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="open-questions" aria-labelledby="open-questions-title">
+          <h3 class="subsection-title type-subsection" id="open-questions-title">Kept unresolved interaction details explicit</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Sorting, discovery, “used in” information, list-value display, and module-specific variations needed further design and validation.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">These details belong in the next design and research cycle rather than being represented as settled outcomes. The core model defines the account/project relationship; the remaining questions refine how people discover, inspect, and manage that model in different modules.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter learning" id="learning" data-chapter hidden aria-hidden="true">
         <header class="chapter-opener reveal">
           <div class="chapter-heading">
             <div class="type-label">04 / Reflection</div>
@@ -792,7 +1113,7 @@
       import { annotate } from 'https://unpkg.com/rough-notation?module';
       import { selectActiveChapter, selectActiveSubsection } from './js/case-study-nav-state.js';
       import { createOneShotScrollAnnotations } from './js/case-study-rough-annotation-state.js';
-      import { createTrackpadScrollController, getRevealProgress, getSnapTarget, isHorizontalIntent, runSettleTransition } from './js/case-study-sidecar-state.js';
+      import { createTrackpadScrollController, getRevealProgress, getSnapTarget, isHorizontalIntent, runSettleTransition } from './js/case-study-sidecar-state.js?v=animated-native-settle';
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealObserver = new IntersectionObserver((entries) => {
@@ -859,7 +1180,7 @@
       }
 
       const shell = document.querySelector('[data-case]');
-    const chapters = [...shell.querySelectorAll('[data-chapter]')];
+    const chapters = [...shell.querySelectorAll('[data-chapter]:not([hidden])')];
     const links = [...shell.querySelectorAll('.rail-main > a')];
     const subsectionLinks = [...shell.querySelectorAll('.nested-rail a')];
     const subsectionTargets = subsectionLinks.map((link) => ({ link, target: document.querySelector(link.hash) })).filter(({ target }) => target);
@@ -931,7 +1252,7 @@
     const closeButton = diveFrame.querySelector('[data-close-dive]');
     const takeover = diveFrame.querySelector('[data-dive-takeover]');
     const diveChapters = [...diveFrame.querySelectorAll('[data-dive-chapter]')];
-    const nestedButtons = [...governanceRail.querySelectorAll('[data-dive-target]')];
+    const nestedButtons = governanceRail ? [...governanceRail.querySelectorAll('[data-dive-target]')] : [];
     let revealProgress = 0;
     let settleTimer = 0;
     let delayedCloseTimer = 0;

@@ -36,3 +36,14 @@ test('keeps the active subsection within the active chapter', () => {
     -1,
   );
 });
+
+test('selects an active decision from a later goal without crossing chapter boundaries', () => {
+  assert.equal(
+    navigationState.selectActiveSubsection([
+      { chapterIndex: 3, top: -560 },
+      { chapterIndex: 3, top: -40 },
+      { chapterIndex: 4, top: -160 },
+    ], 3, 180),
+    1,
+  );
+});
