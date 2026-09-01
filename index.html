@@ -252,12 +252,71 @@
       scroll-snap-align: start;
       transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
     }
-    .goal-decision-card a { height: 100%; display: grid; color: inherit; }
+    .goal-decision-card a, .goal-decision-card button {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
     .goal-decision-card .type-label { color: var(--accent); }
     .goal-decision-card .type-detail { align-self: end; margin-top: 20px; }
     .goal-decision-card:hover { border-color: var(--accent); background: color-mix(in srgb, var(--surface-interactive) 90%, var(--accent)); transform: translateY(-2px); }
-    .goal-decision-card a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .goal-decision-card a:focus-visible, .goal-decision-card button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
     .goal-decision { scroll-margin-top: calc(var(--bar-h) + 24px); }
+    .goal-frame {
+      --goal-summary-h: calc(100vh - var(--bar-h));
+      position: relative;
+      min-height: var(--goal-summary-h);
+      overflow: clip;
+      background: var(--surface-canvas);
+    }
+    .goal-summary { min-height: var(--goal-summary-h); }
+    .goal-takeover {
+      position: relative;
+      z-index: 8;
+      max-height: 0;
+      overflow: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      background: var(--surface-canvas);
+      transform: translateX(100%);
+      will-change: transform;
+    }
+    .goal-frame[data-expanded="true"] .goal-takeover {
+      max-height: none;
+      min-height: var(--goal-summary-h);
+      margin-top: calc(-1 * var(--goal-summary-h));
+      overflow: visible;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .goal-frame[data-state="open"] .goal-takeover { transform: translateX(0); transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
+    .goal-frame[data-state="closing"] .goal-takeover { transform: translateX(100%); transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
+    .goal-return-wrap {
+      position: sticky;
+      top: calc(var(--bar-h) + 18px);
+      z-index: 12;
+      height: 0;
+      padding-left: var(--section-gutter);
+      pointer-events: none;
+    }
+    .goal-close {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid var(--hairline);
+      color: var(--text-primary);
+      background: var(--surface-interactive);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .goal-close:hover { border-color: var(--accent); color: var(--accent); }
+    .goal-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     .chapter-evidence { padding: 0 var(--section-gutter) clamp(100px, 13vw, 190px); background: var(--surface-canvas); }
     .chapter-evidence > * { max-width: 650px; margin-left: min(24vw, 360px); }
     .chapter-evidence .type-caption { margin-top: 22px; }
@@ -509,6 +568,8 @@
       .chapter-summary { max-width: 19ch; }
       .goal-decision-overview { grid-auto-columns: minmax(78vw, 1fr); margin-top: 42px; }
       .goal-decision-card { min-height: 154px; padding: 18px; }
+      .goal-frame { --goal-summary-h: calc(100vh - var(--bar-h) - 62px); }
+      .goal-return-wrap { top: calc(var(--bar-h) + 74px); padding-left: 16px; }
       .chapter-evidence { padding: 0 24px 76px; }
       .chapter-evidence > * { margin-left: 0; }
       .subsection-grid { padding: 68px 24px; grid-template-columns: 1fr; row-gap: 26px; }
@@ -715,20 +776,23 @@
       </section>
 
       <section class="chapter" id="collaboration" data-chapter>
-        <header class="chapter-opener reveal">
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">02 / Delivery</div>
             <h2 class="chapter-title type-section">Establish a shared way of working</h2>
           </div>
           <p class="chapter-summary type-summary">Construction Cloud and AEC Data came from separate Autodesk organizations, worked with different personas, and needed a shared basis for decisions about the same data model.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that established a shared way of working">
-            <li class="goal-decision-card"><a href="#shared-brief"><span class="type-label">01</span><strong class="type-detail">Made the goals explicit.</strong></a></li>
-            <li class="goal-decision-card"><a href="#joint-research"><span class="type-label">02</span><strong class="type-detail">Built shared understanding together.</strong></a></li>
-            <li class="goal-decision-card"><a href="#working-overlap"><span class="type-label">03</span><strong class="type-detail">Created time for dependent decisions.</strong></a></li>
-            <li class="goal-decision-card"><a href="#logic-prototypes"><span class="type-label">04</span><strong class="type-detail">Tested complex logic in working prototypes.</strong></a></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="shared-brief"><span class="type-label">01</span><strong class="type-detail">Made the goals explicit.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="joint-research"><span class="type-label">02</span><strong class="type-detail">Built shared understanding together.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="working-overlap"><span class="type-label">03</span><strong class="type-detail">Created time for dependent decisions.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="logic-prototypes"><span class="type-label">04</span><strong class="type-detail">Tested complex logic in working prototypes.</strong></button></li>
           </ol>
         </header>
 
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
         <section class="subsection-grid goal-decision" id="shared-brief" aria-labelledby="shared-brief-title">
           <h3 class="subsection-title type-subsection" id="shared-brief-title">Made the goals explicit</h3>
           <div class="subsection-content">
@@ -772,21 +836,26 @@
             </div>
           </div>
         </section>
+        </article>
+        </div>
       </section>
 
       <section class="chapter" id="project-flexibility" data-chapter>
-        <header class="chapter-opener reveal">
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">03 / Goal 1</div>
             <h2 class="chapter-title type-section">Enable flexible custom data in project workflows</h2>
           </div>
           <p class="chapter-summary type-summary">Project engineers needed information in Submittals that the predefined property set did not capture, without making every project-specific field a platform standard.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that enabled flexible project data">
-            <li class="goal-decision-card"><a href="#custom-data-in-submittals"><span class="type-label">01</span><strong class="type-detail">Enabled custom data in Submittals.</strong></a></li>
-            <li class="goal-decision-card"><a href="#module-specific-controls"><span class="type-label">02</span><strong class="type-detail">Kept workflow controls with each module.</strong></a></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="custom-data-in-submittals"><span class="type-label">01</span><strong class="type-detail">Enabled custom data in Submittals.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="module-specific-controls"><span class="type-label">02</span><strong class="type-detail">Kept workflow controls with each module.</strong></button></li>
           </ol>
         </header>
 
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
         <section class="subsection-grid goal-decision" id="custom-data-in-submittals" aria-labelledby="custom-data-in-submittals-title">
           <h3 class="subsection-title type-subsection" id="custom-data-in-submittals-title">Enabled custom data in Submittals</h3>
           <div class="subsection-content">
@@ -810,21 +879,26 @@
             </div>
           </div>
         </section>
+        </article>
+        </div>
       </section>
 
       <section class="chapter" id="reuse-before-creation" data-chapter>
-        <header class="chapter-opener reveal">
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">04 / Goal 2</div>
             <h2 class="chapter-title type-section">Make reuse easier than duplicate creation</h2>
           </div>
           <p class="chapter-summary type-summary">Account-level standards reduce duplication only when project users can find and choose them inside the workflow where they need a field.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that made data definition reuse easier">
-            <li class="goal-decision-card"><a href="#find-existing-definitions"><span class="type-label">01</span><strong class="type-detail">Showed existing definitions before creation.</strong></a></li>
-            <li class="goal-decision-card"><a href="#create-when-needed"><span class="type-label">02</span><strong class="type-detail">Kept creation available when reuse did not fit.</strong></a></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="find-existing-definitions"><span class="type-label">01</span><strong class="type-detail">Showed existing definitions before creation.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="create-when-needed"><span class="type-label">02</span><strong class="type-detail">Kept creation available when reuse did not fit.</strong></button></li>
           </ol>
         </header>
 
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
         <section class="subsection-grid goal-decision" id="find-existing-definitions" aria-labelledby="find-existing-definitions-title">
           <h3 class="subsection-title type-subsection" id="find-existing-definitions-title">Showed existing definitions before creation</h3>
           <div class="subsection-content">
@@ -848,22 +922,27 @@
             </div>
           </div>
         </section>
+        </article>
+        </div>
       </section>
 
       <section class="chapter" id="standards-governance" data-chapter>
-        <header class="chapter-opener reveal">
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">05 / Goal 3</div>
             <h2 class="chapter-title type-section">Govern standards without making projects brittle</h2>
           </div>
           <p class="chapter-summary type-summary">Account managers need reusable, consistent definitions across projects, while project teams need data that remains stable after an account-level change.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that governed standards across account and project levels">
-            <li class="goal-decision-card"><a href="#separate-governance-scope"><span class="type-label">01</span><strong class="type-detail">Separated account standards from project definitions.</strong></a></li>
-            <li class="goal-decision-card"><a href="#preserve-applied-values"><span class="type-label">02</span><strong class="type-detail">Preserved applied values when lists changed.</strong></a></li>
-            <li class="goal-decision-card"><a href="#make-changes-visible"><span class="type-label">03</span><strong class="type-detail">Made ownership and consequences visible.</strong></a></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="separate-governance-scope"><span class="type-label">01</span><strong class="type-detail">Separated account standards from project definitions.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="preserve-applied-values"><span class="type-label">02</span><strong class="type-detail">Preserved applied values when lists changed.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="make-changes-visible"><span class="type-label">03</span><strong class="type-detail">Made ownership and consequences visible.</strong></button></li>
           </ol>
         </header>
 
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
         <section class="subsection-grid goal-decision" id="separate-governance-scope" aria-labelledby="separate-governance-scope-title">
           <h3 class="subsection-title type-subsection" id="separate-governance-scope-title">Separated account standards from project definitions</h3>
           <div class="subsection-content">
@@ -897,6 +976,8 @@
             </div>
           </div>
         </section>
+        </article>
+        </div>
       </section>
 
       <section class="chapter decision-chapter" id="decision" data-chapter hidden aria-hidden="true">
@@ -993,19 +1074,22 @@
       </section>
 
       <section class="chapter" id="cross-product-reuse" data-chapter>
-        <header class="chapter-opener reveal">
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <header class="chapter-opener reveal goal-summary">
           <div class="chapter-heading">
             <div class="type-label">06 / Goal 4</div>
             <h2 class="chapter-title type-section">Reuse the model while making it native to Construction Cloud</h2>
           </div>
           <p class="chapter-summary type-summary">AEC Data provided shared data logic and infrastructure; Construction Cloud needed an interaction model that matched its project workflow conventions.</p>
           <ol class="goal-decision-overview" aria-label="Decisions that made the model reusable across products">
-            <li class="goal-decision-card"><a href="#reuse-platform-logic"><span class="type-label">01</span><strong class="type-detail">Reused shared data logic and infrastructure.</strong></a></li>
-            <li class="goal-decision-card"><a href="#translate-cad-interactions"><span class="type-label">02</span><strong class="type-detail">Translated CAD-oriented interactions.</strong></a></li>
-            <li class="goal-decision-card"><a href="#extend-construction-cloud-patterns"><span class="type-label">03</span><strong class="type-detail">Kept the pattern reusable across modules.</strong></a></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="reuse-platform-logic"><span class="type-label">01</span><strong class="type-detail">Reused shared data logic and infrastructure.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="translate-cad-interactions"><span class="type-label">02</span><strong class="type-detail">Translated CAD-oriented interactions.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="extend-construction-cloud-patterns"><span class="type-label">03</span><strong class="type-detail">Kept the pattern reusable across modules.</strong></button></li>
           </ol>
         </header>
 
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
         <section class="subsection-grid goal-decision" id="reuse-platform-logic" aria-labelledby="reuse-platform-logic-title">
           <h3 class="subsection-title type-subsection" id="reuse-platform-logic-title">Reused shared data logic and infrastructure</h3>
           <div class="subsection-content">
@@ -1043,6 +1127,8 @@
             </div>
           </div>
         </section>
+        </article>
+        </div>
       </section>
 
       <section class="chapter" id="validation" data-chapter>
@@ -1184,6 +1270,7 @@
     const links = [...shell.querySelectorAll('.rail-main > a')];
     const subsectionLinks = [...shell.querySelectorAll('.nested-rail a')];
     const subsectionTargets = subsectionLinks.map((link) => ({ link, target: document.querySelector(link.hash) })).filter(({ target }) => target);
+    const goalFrames = [...shell.querySelectorAll('[data-goal-dive]')];
     const progress = shell.querySelector('.progress span');
     const governanceRail = shell.querySelector('[data-governance-rail]');
     let activeChapterIndex = 0;
@@ -1191,15 +1278,20 @@
     const updateSubsectionState = () => {
       const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
       const readingLine = barHeight + Math.min(window.innerHeight * .24, 220);
+      const visibleSubsectionTargets = subsectionTargets.filter(({ target }) => {
+        const frame = target.closest('[data-goal-dive]');
+        return !frame || frame.dataset.expanded === 'true';
+      });
       const activeLinkIndex = selectActiveSubsection(
-        subsectionTargets.map(({ target }) => ({
+        visibleSubsectionTargets.map(({ target }) => ({
           chapterIndex: chapters.findIndex((chapter) => chapter.contains(target)),
           top: target.getBoundingClientRect().top,
         })),
         activeChapterIndex,
         readingLine,
       );
-      subsectionLinks.forEach((link, index) => link.classList.toggle('active', index === activeLinkIndex));
+      const activeLink = visibleSubsectionTargets[activeLinkIndex]?.link;
+      subsectionLinks.forEach((link) => link.classList.toggle('active', link === activeLink));
     };
 
     const updateChapterState = () => {
@@ -1222,6 +1314,50 @@
       const travelled = Math.min(available, Math.max(0, -rect.top + 64));
       progress.style.setProperty('--progress', `${(travelled / available) * 100}%`);
     };
+    const goalSidecarDuration = reduceMotion ? 0 : 520;
+    const openGoalSidecar = (frame, targetId) => {
+      const takeover = frame.querySelector('[data-goal-takeover]');
+      const target = targetId ? frame.querySelector(`#${targetId}`) : null;
+      if (!takeover) return;
+
+      frame.dataset.expanded = 'true';
+      frame.dataset.state = 'opening';
+      takeover.setAttribute('aria-hidden', 'false');
+      window.requestAnimationFrame(() => { frame.dataset.state = 'open'; });
+      window.setTimeout(() => {
+        target?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+        updateChapterState();
+        updateProgress();
+      }, goalSidecarDuration + 20);
+    };
+    const closeGoalSidecar = (frame, { focusSummary = false } = {}) => {
+      const takeover = frame.querySelector('[data-goal-takeover]');
+      if (!takeover || frame.dataset.expanded !== 'true') return;
+      frame.dataset.state = 'closing';
+      window.setTimeout(() => {
+        frame.dataset.state = 'closed';
+        frame.dataset.expanded = 'false';
+        takeover.setAttribute('aria-hidden', 'true');
+        if (focusSummary) frame.querySelector('[data-goal-target]')?.focus({ preventScroll: true });
+        updateChapterState();
+        updateProgress();
+      }, goalSidecarDuration);
+    };
+    goalFrames.forEach((frame) => {
+      frame.querySelectorAll('[data-goal-target]').forEach((button) => {
+        button.addEventListener('click', () => openGoalSidecar(frame, button.dataset.goalTarget));
+      });
+      frame.querySelector('[data-close-goal]').addEventListener('click', () => closeGoalSidecar(frame, { focusSummary: true }));
+    });
+    subsectionLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const target = document.querySelector(link.hash);
+        const frame = target?.closest('[data-goal-dive]');
+        if (!frame) return;
+        event.preventDefault();
+        openGoalSidecar(frame, target.id);
+      });
+    });
     let updateFrame = 0;
     const requestNavigationUpdate = () => {
       if (updateFrame) return;
@@ -1340,6 +1476,11 @@
     openButton.addEventListener('click', () => settleDive(1));
     closeButton.addEventListener('click', () => settleDive(0, { focusSummary: true, returnToStart: true }));
     document.addEventListener('keydown', (event) => {
+      const openGoalFrame = goalFrames.find((frame) => frame.dataset.expanded === 'true');
+      if (event.key === 'Escape' && openGoalFrame) {
+        closeGoalSidecar(openGoalFrame, { focusSummary: true });
+        return;
+      }
       if (event.key === 'Escape' && diveFrame.dataset.expanded === 'true') {
         settleDive(0, { focusSummary: true, returnToStart: true });
       }

@@ -2,7 +2,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const source = readFileSync('index.html', 'utf8');
+const source = readFileSync(
+  'index.html',
+  'utf8',
+);
 
 const goals = [
   {
@@ -37,19 +40,28 @@ function sectionSource(chapterId) {
   return source.slice(source.indexOf(`id="${chapterId}"`), nextSection === -1 ? source.length : nextSection);
 }
 
-test('adds every approved goal and exposes its decisions in a horizontal overview', () => {
+test('keeps each goal as a summary until a decision opens its sidecar', () => {
   goals.forEach(({ chapterId, title, decisionIds }) => {
     const section = sectionSource(chapterId);
 
     assert.match(source, new RegExp(`<section[^>]*id="${chapterId}"[^>]*data-chapter`));
     assert.match(section, new RegExp(`<h2[^>]*>${title}</h2>`));
+    assert.match(section, /<div class="goal-frame" data-goal-dive data-expanded="false">/);
     assert.match(section, /<ol class="goal-decision-overview"[\s\S]*?<\/ol>/);
+    assert.match(section, /<article class="goal-takeover" data-goal-takeover aria-hidden="true">/);
 
     decisionIds.forEach((decisionId) => {
-      assert.match(section, new RegExp(`href="#${decisionId}"`));
+      assert.match(section, new RegExp(`data-goal-target="${decisionId}"`));
       assert.match(section, new RegExp(`<section class="subsection-grid goal-decision" id="${decisionId}"`));
     });
   });
+});
+test('opens a goal sidecar from either its overview or the persistent index', () => {
+  assert.match(source, /const goalFrames = \[\.\.\.shell\.querySelectorAll\('\[data-goal-dive\]'\)\];/);
+  assert.match(source, /const openGoalSidecar = \(frame, targetId\) => \{/);
+  assert.match(source, /frame\.dataset\.expanded = 'true';/);
+  assert.match(source, /link\.addEventListener\('click', \(event\) => \{/);
+  assert.match(source, /target\.closest\('\[data-goal-dive\]'\)/);
 });
 
 test('keeps only real chapters in the reader navigation', () => {
