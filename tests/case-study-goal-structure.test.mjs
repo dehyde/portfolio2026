@@ -95,6 +95,18 @@ test('groups design goals and labels data standardization in the reader navigati
   assert.match(source, /\.rail-group-label \{[\s\S]*?color: var\(--text-muted\);[\s\S]*?text-transform: uppercase;/);
 });
 
+test('uses a shared text-and-visual overview for every visible goal', () => {
+  goals.forEach(({ chapterId }) => {
+    const section = sectionSource(chapterId);
+
+    assert.match(section, /<div class="goal-overview-grid">[\s\S]*?<ol class="goal-decision-overview"[\s\S]*?<figure class="goal-overview-visual">/);
+    assert.match(section, /<figure class="goal-overview-visual">\s*<img [^>]+\/>\s*<\/figure>/);
+  });
+
+  assert.match(source, /\.goal-overview-grid \{[\s\S]*?grid-template-columns: minmax\(0, \.78fr\) minmax\(0, 1\.22fr\);/);
+  assert.match(source, /\.goal-decision-overview \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\);[\s\S]*?overflow: visible;/);
+});
+
 test('preserves the approved opening and collaboration copy', () => {
   assert.match(source, /<h2 class="type-display">Custom data management UX across account and project levels\.<\/h2>/);
   assert.match(source, /<h2 class="chapter-title type-section">Managing challenges of cross-team collaboration<\/h2>/);
