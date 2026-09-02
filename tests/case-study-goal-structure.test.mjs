@@ -107,6 +107,23 @@ test('uses a shared text-and-visual overview for every visible goal', () => {
   assert.match(source, /\.goal-decision-overview \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\);[\s\S]*?overflow: visible;/);
 });
 
+test('summarizes every overview decision without divider lines', () => {
+  goals.forEach(({ chapterId, decisionIds }) => {
+    const section = sectionSource(chapterId);
+    const summaries = [...section.matchAll(/class="goal-decision-summary type-body-support">([^<]+)</g)];
+
+    assert.equal(summaries.length, decisionIds.length);
+    summaries.forEach(([, summary]) => assert.ok(summary.trim().length > 24));
+  });
+
+  const decisionCardStyles = source.match(/\.goal-decision-card \{([^}]*)\}/)?.[1] ?? '';
+  const finalDecisionCardStyles = source.match(/\.goal-decision-card:last-child \{([^}]*)\}/)?.[1] ?? '';
+
+  assert.doesNotMatch(decisionCardStyles, /border-/);
+  assert.doesNotMatch(finalDecisionCardStyles, /border-/);
+  assert.match(source, /\.goal-decision-card \+ \.goal-decision-card \{ margin-top: clamp\(20px, 2vw, 32px\); \}/);
+});
+
 test('preserves the approved opening and collaboration copy', () => {
   assert.match(source, /<h2 class="type-display">Custom data management UX across account and project levels\.<\/h2>/);
   assert.match(source, /<h2 class="chapter-title type-section">Managing challenges of cross-team collaboration<\/h2>/);
