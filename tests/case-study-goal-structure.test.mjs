@@ -110,7 +110,7 @@ test('uses a shared text-and-visual overview for every visible goal', () => {
 test('summarizes every overview decision without divider lines', () => {
   goals.forEach(({ chapterId, decisionIds }) => {
     const section = sectionSource(chapterId);
-    const summaries = [...section.matchAll(/class="goal-decision-summary type-body-support">([^<]+)</g)];
+    const summaries = [...section.matchAll(/class="goal-decision-summary type-body-reading">([^<]+)</g)];
 
     assert.equal(summaries.length, decisionIds.length);
     summaries.forEach(([, summary]) => assert.ok(summary.trim().length > 24));
