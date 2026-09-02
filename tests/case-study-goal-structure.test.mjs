@@ -110,7 +110,7 @@ test('uses a shared text-and-visual overview for every visible goal', () => {
 test('summarizes every overview decision without divider lines', () => {
   goals.forEach(({ chapterId, decisionIds }) => {
     const section = sectionSource(chapterId);
-    const summaries = [...section.matchAll(/class="goal-decision-summary type-body-reading">([^<]+)</g)];
+    const summaries = [...section.matchAll(/class="goal-decision-summary type-body-summary">([^<]+)</g)];
 
     assert.equal(summaries.length, decisionIds.length);
     summaries.forEach(([, summary]) => assert.ok(summary.trim().length > 24));
@@ -122,6 +122,8 @@ test('summarizes every overview decision without divider lines', () => {
   assert.doesNotMatch(decisionCardStyles, /border-/);
   assert.doesNotMatch(finalDecisionCardStyles, /border-/);
   assert.match(source, /\.goal-decision-card \+ \.goal-decision-card \{ margin-top: clamp\(20px, 2vw, 32px\); \}/);
+  assert.match(source, /--type-overview-body-size: clamp\(18px, 1\.1vw, 20px\);/);
+  assert.match(source, /\.type-body-summary \{[\s\S]*?font: 340 var\(--type-overview-body-size\)\/1\.48 var\(--font-editorial\);/);
 });
 
 test('preserves the approved opening and collaboration copy', () => {
